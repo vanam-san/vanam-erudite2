@@ -91,6 +91,11 @@ import { GISCUS } from "@/consts"
     })
   }
 
+  // Initial load: module scripts run after DOM is parsed, call directly
+  loadGiscus()
+  startObserver()
+
+  // ClientRouter navigation support
   document.addEventListener("astro:page-load", () => {
     loadGiscus()
     startObserver()
