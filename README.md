@@ -26,7 +26,6 @@ A personal portfolio and blog built with [Astro](https://astro.build/), [Tailwin
 - Giscus comment system on blog posts
 - Umami analytics integration
 
-
 ## Project Structure
 
 ```

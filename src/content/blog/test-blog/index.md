@@ -8,7 +8,7 @@ authors:
 ---
 
 :::caution[Out of date]
-This is a test blkog
+This is a test blog
 :::
 
 Hello World! 👋
