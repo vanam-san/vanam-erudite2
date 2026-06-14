@@ -1,0 +1,21 @@
+---
+type Props = {
+  span?: 2 | 1
+  rowSpan?: 2 | 1
+  href?: string
+  class?: string
+}
+
+const { span = 1, rowSpan = 1, href, class: className } = Astro.props
+
+const Tag = href ? "a" : "div"
+---
+
+<Tag
+  href={href}
+  data-span={span === 2 ? 2 : undefined}
+  data-row-span={rowSpan === 2 ? 2 : undefined}
+  class:list={["bento-card", className]}
+>
+  <slot />
+</Tag>

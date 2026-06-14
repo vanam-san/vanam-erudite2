@@ -1,0 +1,85 @@
+---
+import GalleryGrid from "@/components/GalleryGrid.astro"
+import MetaPage from "@/components/MetaPage.astro"
+import ScrollToTop from "@/components/ScrollToTop.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getGalleries } from "@/lib/content"
+import { formatDate } from "@/lib/utils"
+import { render } from "astro:content"
+
+export async function getStaticPaths() {
+  const galleries = await getGalleries()
+  return galleries.map((gallery) => ({
+    params: { slug: gallery.id },
+    props: { gallery },
+  }))
+}
+
+const { gallery } = Astro.props
+const { Content } = await render(gallery)
+
+const crumbs = [{ label: gallery.data.title, href: `/gallery/${gallery.id}` }]
+---
+
+<Layout crumbs={crumbs}>
+  <MetaPage
+    slot="head"
+    title={gallery.data.title}
+    description={gallery.data.description}
+  />
+  <ScrollToTop floating />
+  <article>
+    <header>
+      <h1>{gallery.data.title}</h1>
+      <post-meta>
+        <time datetime={gallery.data.date.toISOString()}>
+          {formatDate(gallery.data.date)}
+        </time>
+        <post-count>
+          {gallery.data.photos.length}
+          photo{gallery.data.photos.length === 1 ? "" : "s"}
+        </post-count>
+      </post-meta>
+      <p>{gallery.data.description}</p>
+    </header>
+    <GalleryGrid photos={gallery.data.photos} title={gallery.data.title} />
+    <prose-content>
+      <Content />
+    </prose-content>
+  </article>
+</Layout>
+
+<style>
+  header {
+    margin-block-end: var(--space-m);
+
+    h1 {
+      font-size: var(--step-3);
+      line-height: calc(var(--leading-offset) + 1em);
+      font-weight: var(--font-weight-medium);
+    }
+
+    post-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-3xs);
+      margin-block-start: var(--space-3xs);
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+
+      post-count {
+        &::before {
+          content: "·";
+          margin-inline-end: var(--space-3xs);
+        }
+      }
+    }
+
+    > p {
+      margin-block-start: var(--space-2xs);
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+    }
+  }
+</style>

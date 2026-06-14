@@ -1,0 +1,48 @@
+---
+import SocialIcons from "@/components/SocialIcons.astro"
+import { SITE, SOCIALS } from "@/consts"
+---
+
+<footer>
+  <p>
+    &copy; {new Date().getFullYear()}
+    {SITE.title}
+    <span class="footer-links">
+      | <a href="/legal">Legal</a>
+      | <a href="/tags">Tag</a>
+      | <a href="/">Home</a>
+    </span>
+  </p>
+  <SocialIcons links={SOCIALS} />
+</footer>
+
+<style>
+  footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-block: var(--space-xs) var(--page-offset-bottom);
+
+    @media (width >= 40rem) {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    p {
+      font-size: var(--step--1);
+      color: var(--muted-foreground);
+    }
+
+    .footer-links a {
+      color: var(--muted-foreground);
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      transition: text-decoration-color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--primary);
+      text-decoration-color: currentColor;
+    }
+  }
+</style>

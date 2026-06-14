@@ -1,0 +1,215 @@
+/* ── Gallery Grid ───────────────────────────────────────── */
+
+gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-s);
+}
+
+@media (width < 48rem) {
+  gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (width < 30rem) {
+  gallery-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+gallery-grid button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  background: none;
+
+  :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+
+  &:hover :global(img) {
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* ── Gallery Card (listing page) ────────────────────────── */
+
+gallery-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  border: 1.5px solid var(--border);
+  background-color: color-mix(in oklab, var(--muted) 20%, transparent);
+  text-decoration-line: none;
+  transition: border-color 0.3s, background-color 0.3s, box-shadow 0.3s,
+    transform 0.3s;
+
+  &:hover {
+    border-color: var(--primary);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    box-shadow: 0 4px 24px color-mix(in oklab, var(--primary) 8%, transparent);
+    transform: translateY(-2px);
+  }
+
+  gallery-card-image {
+    display: block;
+    overflow: hidden;
+
+    :global(img) {
+      display: block;
+      width: 100%;
+      height: 12rem;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+  }
+
+  &:hover gallery-card-image :global(img) {
+    transform: scale(1.05);
+  }
+
+  gallery-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+    padding: var(--space-s);
+  }
+
+  gallery-card-title {
+    font-size: var(--step-0);
+    font-weight: var(--font-weight-medium);
+    color: var(--foreground);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  gallery-card-desc {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    line-clamp: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  gallery-card-count {
+    font-size: 0.625rem;
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  }
+}
+
+/* ── Lightbox ───────────────────────────────────────────── */
+
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: color-mix(in oklab, var(--background) 90%, transparent);
+  backdrop-filter: blur(var(--blur-lg));
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+
+  &[data-open] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.lightbox-overlay img {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+}
+
+.lightbox-close {
+  position: absolute;
+  inset-block-start: var(--space-m);
+  inset-inline-end: var(--space-m);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--muted) 80%, transparent);
+  }
+
+  svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: absolute;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--muted) 80%, transparent);
+  }
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.lightbox-prev {
+  inset-inline-start: var(--space-m);
+}
+
+.lightbox-next {
+  inset-inline-end: var(--space-m);
+}
+
+.lightbox-counter {
+  position: absolute;
+  inset-block-end: var(--space-m);
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  padding-inline: var(--space-xs);
+  padding-block: var(--space-3xs);
+  border-radius: var(--radius-full);
+  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  font-size: var(--step--1);
+  color: var(--foreground);
+}

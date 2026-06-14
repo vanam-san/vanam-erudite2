@@ -1,0 +1,140 @@
+---
+import { Image } from "astro:assets"
+import type { ImageMetadata } from "astro"
+
+type Props = {
+  photos: ImageMetadata[]
+  title?: string
+}
+
+const { photos, title = "" } = Astro.props
+---
+
+<gallery-grid>
+  {photos.map((photo, index) => (
+    <button
+      data-gallery-thumb
+      data-index={index}
+      data-full-src={photo.src}
+      data-full-width={photo.width}
+      data-full-height={photo.height}
+      aria-label={`${title ? `${title} - ` : ""}Photo ${index + 1}`}
+    >
+      <Image
+        src={photo}
+        alt={title ? `${title} - Photo ${index + 1}` : `Gallery photo ${index + 1}`}
+        width={600}
+        height={400}
+        loading="lazy"
+      />
+    </button>
+  ))}
+</gallery-grid>
+
+<script>
+  function initLightbox() {
+    const grid = document.querySelector("gallery-grid")
+    if (!grid) return
+
+    const thumbs = grid.querySelectorAll("[data-gallery-thumb]")
+    if (!thumbs.length) return
+
+    const images: { src: string; alt: string }[] = []
+    thumbs.forEach((thumb) => {
+      const img = thumb.querySelector("img")
+      const fullSrc = thumb.getAttribute("data-full-src")
+      if (img && fullSrc) {
+        images.push({
+          src: fullSrc,
+          alt: img.alt,
+        })
+      }
+    })
+
+    let overlay = document.querySelector(".lightbox-overlay") as HTMLElement
+    if (!overlay) {
+      overlay = document.createElement("div")
+      overlay.className = "lightbox-overlay"
+      overlay.innerHTML = `
+        <button class="lightbox-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        <button class="lightbox-prev" aria-label="Previous image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+        <img alt="" />
+        <button class="lightbox-next" aria-label="Next image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+        <div class="lightbox-counter"></div>
+      `
+      document.body.appendChild(overlay)
+    }
+
+    const lbImage = overlay.querySelector("img") as HTMLImageElement
+    const lbCounter = overlay.querySelector(".lightbox-counter") as HTMLElement
+    const lbClose = overlay.querySelector(
+      ".lightbox-close",
+    ) as HTMLButtonElement
+    const lbPrev = overlay.querySelector(".lightbox-prev") as HTMLButtonElement
+    const lbNext = overlay.querySelector(".lightbox-next") as HTMLButtonElement
+
+    let current = 0
+
+    function show() {
+      lbImage.src = images[current].src
+      lbImage.alt = images[current].alt
+      lbCounter.textContent = `${current + 1} / ${images.length}`
+      overlay.setAttribute("data-open", "")
+      document.body.style.overflow = "hidden"
+      lbClose.focus()
+    }
+
+    function hide() {
+      overlay.removeAttribute("data-open")
+      document.body.style.overflow = ""
+      ;(thumbs[current] as HTMLElement)?.focus()
+    }
+
+    function prev() {
+      current = (current - 1 + images.length) % images.length
+      show()
+    }
+
+    function next() {
+      current = (current + 1) % images.length
+      show()
+    }
+
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener("click", () => {
+        current = i
+        show()
+      })
+    })
+
+    lbClose.onclick = hide
+    overlay.onclick = (e) => {
+      if (e.target === overlay) hide()
+    }
+    lbPrev.onclick = prev
+    lbNext.onclick = next
+
+    document.onkeydown = (e) => {
+      if (!overlay.hasAttribute("data-open")) return
+      if (e.key === "Escape") hide()
+      if (e.key === "ArrowLeft") prev()
+      if (e.key === "ArrowRight") next()
+    }
+  }
+
+  document.addEventListener("astro:page-load", initLightbox)
+  initLightbox()
+</script>

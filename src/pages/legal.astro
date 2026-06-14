@@ -1,0 +1,165 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
+---
+
+<Layout>
+  <MetaPage
+    slot="head"
+    title="Legal"
+    description="Legal information, privacy policy, and terms of use."
+  />
+  <div class="page-header">
+    <h1 class="page-title">Legal</h1>
+    <p class="page-description">
+      Legal information regarding the use of this website.
+    </p>
+  </div>
+
+  <section class="legal-section">
+    <h2 class="legal-section-title">Privacy Policy</h2>
+    <div class="prose">
+      <p><strong>Effective Date:</strong> October 1, 2025</p>
+      <p>
+        Your privacy is important. This website is designed to respect your
+        privacy:
+      </p>
+      <ul>
+        <li>No personal data is collected by this site.</li>
+        <li>
+          Web analytics are performed using <strong>Umami</strong>, a cookieless
+          analytics tool. Any data collected (e.g., page views, referrers,
+          browser info) is anonymous and cannot identify individual users.
+        </li>
+        <li><strong>Cookies:</strong> This website does not use cookies.</li>
+        <li>
+          <strong>Location (Weather Feature):</strong>
+          This website determines your approximate location using your browser's
+          timezone (via <code>Intl.DateTimeFormat</code>) and looks up the
+          corresponding city name. No precise coordinates are collected or
+          stored. Weather data is fetched from the
+          <strong>Open-Meteo</strong> API using only the city name. You may
+          disable JavaScript to prevent this feature from running; the website
+          will still function without it.
+        </li>
+        <li>
+          <strong>Contact:</strong>
+          If you have questions about privacy, you can reach us via the contact
+          information provided on this website.
+        </li>
+      </ul>
+      <p>
+        By using this website, you agree to the practices described in this
+        Privacy Policy.
+      </p>
+    </div>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-section-title">Distribution Rights</h2>
+    <div class="prose">
+      <p>
+        All content on this website, including text, images, and code snippets,
+        is authored by the website owner unless otherwise noted.
+      </p>
+      <ul>
+        <li>
+          Most content is open source and may be freely reproduced, republished,
+          or used commercially.
+        </li>
+        <li>For questions regarding content use, contact the website owner.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="legal-section">
+    <h2 class="legal-section-title">Terms and Conditions</h2>
+    <div class="prose">
+      <p>
+        By accessing or using this website, you agree to the following terms:
+      </p>
+
+      <h3>Use of Content</h3>
+      <ul>
+        <li>Content is provided for informational and educational purposes.</li>
+        <li>
+          You may not use this website to violate any laws or infringe on the
+          rights of others.
+        </li>
+      </ul>
+
+      <h3>Accuracy of Information</h3>
+      <p>
+        While every effort is made to ensure accuracy, the website owner makes
+        no guarantees regarding the completeness or correctness of content.
+      </p>
+
+      <h3>Limitation of Liability</h3>
+      <p>
+        This website and its owner are not liable for any damages resulting from
+        the use or inability to use this website.
+      </p>
+
+      <h3>External Links</h3>
+      <p>
+        This website may link to other sites. The website owner is not
+        responsible for the content or practices of external websites.
+      </p>
+
+      <h3>Changes to Terms</h3>
+      <p>
+        These terms may be updated at any time without prior notice. Continued
+        use of the website constitutes acceptance of updated terms.
+      </p>
+
+      <h3>Governing Law</h3>
+      <p>
+        These terms are governed by the laws of the jurisdiction where the
+        website owner resides.
+      </p>
+
+      <p>
+        <strong>Contact:</strong>
+        For questions regarding these legal statements, please reach out via the
+        contact information provided on this website.
+      </p>
+      <p>
+        <em>
+          Footnote: Some portions of this legal text were generated with the
+          assistance of large language models (LLMs).
+        </em>
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .page-header {
+    margin-block-end: var(--space-m);
+  }
+
+  .page-title {
+    font-size: var(--step-2);
+    font-weight: var(--font-weight-medium);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  .page-description {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  .legal-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+    margin-block-start: var(--space-m);
+  }
+
+  .legal-section-title {
+    font-size: var(--step-1);
+    font-weight: var(--font-weight-medium);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+</style>

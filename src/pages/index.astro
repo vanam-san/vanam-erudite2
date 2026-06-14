@@ -1,0 +1,291 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+import MetaPage from "@/components/MetaPage.astro"
+import ScrollToTop from "@/components/ScrollToTop.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getPosts, getRecentGalleries } from "@/lib/content"
+import { formatDate } from "@/lib/utils"
+import { Image } from "astro:assets"
+import { getCollection } from "astro:content"
+
+const posts = await getPosts()
+const recentPosts = posts.slice(0, 2)
+const recentGalleries = await getRecentGalleries(1)
+const latestGallery = recentGalleries[0]
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) =>
+    (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0),
+)
+const latestProject = projects[0]
+const totalProjects = projects.length
+---
+
+<Layout>
+  <MetaPage slot="head" />
+  <ScrollToTop floating />
+
+  <div class="bento-grid">
+    <!-- Hero Card (Full Width) -->
+    <BentoCard span={2} href="/about" class="bento-hero">
+      <img
+        src="https://avatars.githubusercontent.com/u/18483618?v=4"
+        alt="enscribe"
+        class="bento-hero-avatar"
+        width="64"
+        height="64"
+      >
+      <div class="bento-hero-name">Vanam-san</div>
+      <!-- <div class="bento-hero-subtitle">Tinkerer</div>-->
+      <p class="bento-hero-bio" data-reveal>
+        Full-stack developer and open-source enthusiast with a passion for
+        building elegant solutions to complex problems. When not writing code,
+        you will find me exploring new technologies, contributing to community
+        projects, or sharing knowledge through technical writing. I believe in
+        building tools that empower others and making the web a better, more
+        accessible place for everyone.
+      </p>
+      <span class="bento-link">View full profile →</span>
+    </BentoCard>
+
+    <!-- Latest Posts Card (Half Width) -->
+    <BentoCard class="bento-posts">
+      <div class="bento-label">Latest Posts</div>
+      {recentPosts.map((post) => (
+        <a href={`/blog/${post.id}`} class="bento-post">
+          <div class="bento-post-title">{post.data.title}</div>
+          <p class="bento-post-desc">{post.data.description}</p>
+          <div class="bento-post-date">{formatDate(post.data.date)}</div>
+        </a>
+      ))}
+      <a href="/blog" class="bento-link">Read All →</a>
+    </BentoCard>
+
+    <!-- Latest Gallery Card (Half Width) -->
+    {latestGallery && (
+      <BentoCard href={`/gallery/${latestGallery.id}`} class="bento-gallery">
+        <div class="bento-gallery-slideshow" data-slideshow>
+          {latestGallery.data.photos.slice(0, 4).map((photo, i) => (
+            <Image
+              src={photo}
+              alt={`${latestGallery.data.title} - Photo ${i + 1}`}
+              width={640}
+              height={336}
+              loading="lazy"
+              class:list={["bento-gallery-slide", i === 0 && "active"]}
+            />
+          ))}
+        </div>
+        <div class="bento-gallery-text">
+          <div class="bento-label">Latest Gallery</div>
+          <div class="bento-gallery-title">{latestGallery.data.title}</div>
+          <div class="bento-gallery-count">
+            {latestGallery.data.photos.length} photos
+          </div>
+          <span class="bento-link">View gallery →</span>
+        </div>
+      </BentoCard>
+    )}
+
+    <!-- Projects Card (Half Width) -->
+    {latestProject && (
+      <BentoCard href="/projects" class="bento-projects">
+        <div class="bento-label">Projects</div>
+        <div class="bento-project">
+          <div class="bento-project-name">{latestProject.data.name}</div>
+          <p class="bento-project-desc">{latestProject.data.description}</p>
+        </div>
+        <div class="bento-project-count">{totalProjects} projects</div>
+        <span class="bento-link">View all →</span>
+      </BentoCard>
+    )}
+
+    <!-- Setup Card (Half Width) -->
+    <BentoCard href="/setup" class="bento-setup">
+      <div class="bento-label">Setup</div>
+      <div class="bento-setup-title">Setup</div>
+      <p class="bento-setup-desc">
+        Hardware and software I use daily for development, infrastructure, and
+        productivity.
+      </p>
+      <div class="bento-setup-meta">Hardware & Software</div>
+      <span class="bento-link">My setup →</span>
+    </BentoCard>
+
+    <!-- Time/Weather Card (Full Width) -->
+    <BentoCard span={2} class="bento-time">
+      <div class="bento-time-section">
+        <div class="bento-time-label">Local Time</div>
+        <div class="bento-time-value" id="bento-time">--:--:-- --</div>
+        <div class="bento-time-date" id="bento-date">---</div>
+      </div>
+      <div class="bento-time-section">
+        <div class="bento-time-label">Weather</div>
+        <div class="bento-weather-value" id="bento-weather">☀️ --°C</div>
+        <div class="bento-weather-desc" id="bento-weather-desc">Loading...</div>
+      </div>
+      <div class="bento-time-section">
+        <div class="bento-time-label" id="bento-timezone-name">Timezone</div>
+        <div class="bento-timezone-offset" id="bento-timezone-offset">
+          --:--
+        </div>
+      </div>
+    </BentoCard>
+  </div>
+</Layout>
+
+<style is:global>
+  .bento-hero-bio [data-reveal-char] {
+    opacity: 0.2;
+    transition: opacity 0.4s ease-out;
+  }
+
+  .bento-hero-bio [data-reveal-char].revealed {
+    opacity: 1;
+  }
+</style>
+
+<script>
+  function initSequentialReveal() {
+    const textElements = document.querySelectorAll<HTMLElement>(
+      "[data-reveal]:not([data-reveal-done])",
+    )
+    const totalDuration = 3000
+
+    textElements.forEach((el) => {
+      el.setAttribute("data-reveal-done", "")
+      const text = el.textContent || ""
+      el.textContent = ""
+      const chars = text.split("")
+
+      chars.forEach((char) => {
+        const span = document.createElement("span")
+        span.textContent = char
+        span.setAttribute("data-reveal-char", "")
+        el.appendChild(span)
+      })
+
+      const spans = el.querySelectorAll<HTMLElement>("[data-reveal-char]")
+      const delayPerChar = totalDuration / spans.length
+
+      spans.forEach((span, i) => {
+        setTimeout(() => {
+          span.classList.add("revealed")
+        }, i * delayPerChar)
+      })
+    })
+  }
+
+  document.addEventListener("astro:page-load", initSequentialReveal)
+  document.addEventListener("astro:after-swap", initSequentialReveal)
+
+  initSequentialReveal()
+</script>
+
+<script>
+  function initSlideshow() {
+    const slideshows = document.querySelectorAll<HTMLElement>(
+      "[data-slideshow]:not([data-slideshow-done])",
+    )
+
+    slideshows.forEach((slideshow) => {
+      slideshow.setAttribute("data-slideshow-done", "")
+      const slides = slideshow.querySelectorAll<HTMLImageElement>(
+        ".bento-gallery-slide",
+      )
+      if (slides.length <= 1) return
+
+      let currentIndex = 0
+      setInterval(() => {
+        slides[currentIndex].classList.remove("active")
+        currentIndex = (currentIndex + 1) % slides.length
+        slides[currentIndex].classList.add("active")
+      }, 3000)
+    })
+  }
+
+  document.addEventListener("astro:page-load", initSlideshow)
+  document.addEventListener("astro:after-swap", initSlideshow)
+
+  initSlideshow()
+</script>
+
+<script>
+  function updateTime() {
+    const now = new Date()
+
+    // Time
+    const timeEl = document.getElementById("bento-time")
+    if (timeEl) {
+      timeEl.textContent = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })
+    }
+
+    // Date
+    const dateEl = document.getElementById("bento-date")
+    if (dateEl) {
+      dateEl.textContent = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })
+    }
+
+    // Timezone
+    const tzNameEl = document.getElementById("bento-timezone-name")
+    const tzOffsetEl = document.getElementById("bento-timezone-offset")
+    if (tzNameEl && tzOffsetEl) {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const offset = now.getTimezoneOffset()
+      const offsetHours = Math.floor(Math.abs(offset) / 60)
+      const offsetMinutes = Math.abs(offset) % 60
+      const offsetSign = offset <= 0 ? "+" : "-"
+
+      tzNameEl.textContent = tz.split("/").pop()?.replace(/_/g, " ") ?? tz
+      tzOffsetEl.textContent = `UTC${offsetSign}${offsetHours}:${offsetMinutes.toString().padStart(2, "0")}`
+    }
+  }
+
+  // Weather using wttr.in (no API key needed)
+  async function fetchWeather() {
+    try {
+      const weatherEl = document.getElementById("bento-weather")
+      const descEl = document.getElementById("bento-weather-desc")
+      if (!weatherEl || !descEl) return
+
+      const res = await fetch("https://wttr.in/?format=j1")
+      const data = await res.json()
+      const current = data.current_condition[0]
+
+      const temp = current.temp_C
+      const desc = current.weatherDesc[0].value
+      const code = current.weatherCode
+
+      // Map weather code to emoji
+      let emoji = "☀️"
+      if (code === "116") emoji = "⛅"
+      else if (code === "119" || code === "122") emoji = "☁️"
+      else if (code === "176" || code === "263" || code === "266") emoji = "🌧️"
+      else if (code === "200" || code === "386" || code === "389") emoji = "⛈️"
+      else if (code === "227" || code === "230") emoji = "❄️"
+      else if (code === "248" || code === "260") emoji = "🌫️"
+      else if (code === "293" || code === "296" || code === "299") emoji = "🌦️"
+
+      weatherEl.textContent = `${emoji} ${temp}°C`
+      descEl.textContent = desc
+    } catch {
+      const weatherEl = document.getElementById("bento-weather")
+      const descEl = document.getElementById("bento-weather-desc")
+      if (weatherEl) weatherEl.textContent = "🌡️ --°C"
+      if (descEl) descEl.textContent = "Weather unavailable"
+    }
+  }
+
+  updateTime()
+  setInterval(updateTime, 1000)
+  fetchWeather()
+</script>

@@ -1,0 +1,239 @@
+---
+import MetaPage from "@/components/MetaPage.astro"
+import Layout from "@/layouts/Layout.astro"
+
+const hardware = [
+  {
+    name: "Laptop",
+    description:
+      "Primary development machine. Configured for coding, daily productivity tasks, and professional workflows.",
+    icon: "💻",
+  },
+  {
+    name: "External Monitor",
+    description:
+      "High-resolution display for extended screen real estate. Perfect for split-pane workflows and design work.",
+    icon: "🖥️",
+  },
+  {
+    name: "Mechanical Keyboard",
+    description:
+      "Custom mechanical keyboard with tactile switches. Hot-swappable, wireless, and comfortable for long typing sessions.",
+    icon: "⌨️",
+  },
+  {
+    name: "Ergonomic Mouse",
+    description:
+      "Wireless ergonomic mouse with customizable buttons. Silent clicks and seamless multi-device switching.",
+    icon: "🖱️",
+  },
+  {
+    name: "Ergonomic Chair",
+    description:
+      "Adjustable office chair designed for long work sessions. Essential for maintaining good posture during extended coding.",
+    icon: "🪑",
+  },
+  {
+    name: "Network Setup",
+    description:
+      "Home network infrastructure with managed switch, access points, and firewall for secure, reliable connectivity.",
+    icon: "📡",
+  },
+]
+
+const software = [
+  {
+    name: "VS Code",
+    description:
+      "Primary code editor with extensions for linting, formatting, and language support. Custom keybindings and themes for productivity.",
+    icon: "📝",
+  },
+  {
+    name: "Terminal + Shell",
+    description:
+      "Custom terminal setup with a modern shell, prompt theme, and aliases for rapid development workflows.",
+    icon: "💻",
+  },
+  {
+    name: "Git",
+    description:
+      "Version control for all projects. Custom commit conventions, branch strategies, and automated CI/CD pipelines.",
+    icon: "🌿",
+  },
+  {
+    name: "Database GUI",
+    description:
+      "Visual database management tool for querying, browsing, and managing SQL and NoSQL databases during development.",
+    icon: "🗄️",
+  },
+  {
+    name: "Figma",
+    description:
+      "Design tool for prototyping UI components, reviewing mockups, and collaborating with design teams.",
+    icon: "🎨",
+  },
+  {
+    name: "Neovim",
+    description:
+      "Lightweight editor for quick terminal-based edits. Custom config with LSP, fuzzy finder, and syntax highlighting.",
+    icon: "📄",
+  },
+  {
+    name: "Password Manager",
+    description:
+      "Secure credential storage for API tokens, SSH keys, and shared team vaults. Essential for maintaining security hygiene.",
+    icon: "🔑",
+  },
+  {
+    name: "Browser",
+    description:
+      "Chromium-based browser with workspaces for separating personal and professional profiles. Tab management and extensions for dev tools.",
+    icon: "🌐",
+  },
+  {
+    name: "Note-Taking App",
+    description:
+      "Second brain for notes, documentation, project planning, and runbooks. Templates for meeting notes and technical documentation.",
+    icon: "📖",
+  },
+]
+---
+
+<Layout>
+  <MetaPage
+    slot="head"
+    title="Setup"
+    description="Hardware and software used for everyday development."
+  />
+
+  <section class="setup-page">
+    <div class="setup-header">
+      <h1 class="setup-title">Setup</h1>
+      <p class="setup-description">
+        A curated list of the hardware and software I use daily for development,
+        infrastructure, and productivity.
+      </p>
+    </div>
+
+    <div class="setup-section">
+      <h2 class="setup-section-title">Hardware</h2>
+      <div class="setup-grid">
+        {hardware.map((item) => (
+          <div class="setup-item">
+            <span class="setup-icon">{item.icon}</span>
+            <div class="setup-content">
+              <h3 class="setup-name">{item.name}</h3>
+              <p class="setup-desc">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="setup-section">
+      <h2 class="setup-section-title">Software</h2>
+      <div class="setup-grid">
+        {software.map((item) => (
+          <div class="setup-item">
+            <span class="setup-icon">{item.icon}</span>
+            <div class="setup-content">
+              <h3 class="setup-name">{item.name}</h3>
+              <p class="setup-desc">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .setup-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .setup-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .setup-title {
+    font-size: var(--step-2);
+    font-weight: var(--font-weight-medium);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  .setup-description {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+
+  .setup-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .setup-section-title {
+    font-size: var(--step-1);
+    font-weight: var(--font-weight-medium);
+    line-height: calc(var(--leading-offset) + 1em);
+    padding-block-end: var(--space-xs);
+    border-block-end: 1px solid var(--border);
+  }
+
+  .setup-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+  }
+
+  .setup-item {
+    display: flex;
+    gap: var(--space-m);
+    padding: var(--space-s);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border);
+    background-color: color-mix(in oklab, var(--muted) 10%, transparent);
+    transition:
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+
+  .setup-item:hover {
+    border-color: var(--primary);
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+  }
+
+  .setup-icon {
+    font-size: var(--step-1);
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .setup-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
+  }
+
+  .setup-name {
+    font-size: var(--step-0);
+    font-weight: var(--font-weight-medium);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  .setup-desc {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    line-height: 1.6;
+  }
+</style>
