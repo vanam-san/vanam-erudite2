@@ -6,10 +6,10 @@ import Twitter from "@/assets/icons/twitter.svg"
 
 export const SITE = {
   title: "vanam-erudite",
-  description: "An opinionated, unstyled blogging template built with Astro.",
+  description: "A personal blog and portfolio built with Astro.",
   locale: "en-US",
   dir: "ltr",
-  //defaultPageImage: "/static/opengraph-image.png",
+  defaultPageImage: "/static/opengraph-image.png",
   defaultPostImage: "/static/1200x630.png",
 } as const
 
@@ -23,7 +23,7 @@ export const NAVIGATION = [
 ]
 
 export const SOCIALS: { href: string; label: string; icon: SvgComponent }[] = [
-  { href: "https://github.com", label: "GitHub", icon: GitHub },
+  { href: "https://github.com/vanam-san", label: "GitHub", icon: GitHub },
   { href: "https://twitter.com", label: "Twitter", icon: Twitter },
   { href: "mailto:your@email.com", label: "Email", icon: Email },
   { href: "/rss.xml", label: "RSS", icon: RSS },

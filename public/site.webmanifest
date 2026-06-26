@@ -2,6 +2,7 @@
   "name": "vanam-erudite",
   "short_name": "vanam-erudite",
   "description": "A personal blog and portfolio built with Astro",
+  "start_url": "/",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

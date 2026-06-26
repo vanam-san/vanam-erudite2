@@ -5,4 +5,5 @@ tags: ["Framework A", "Library B", "Tool C", "Resource D"]
 image: "./placeholder.png"
 link: "https://example.com"
 startDate: "2024-03-01"
+draft: true
 ---

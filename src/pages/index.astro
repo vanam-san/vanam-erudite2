@@ -13,7 +13,7 @@ const recentPosts = posts.slice(0, 2)
 const recentGalleries = await getRecentGalleries(1)
 const latestGallery = recentGalleries[0]
 
-const projects = (await getCollection("projects")).sort(
+const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
   (a, b) =>
     (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0),
 )
@@ -30,20 +30,15 @@ const totalProjects = projects.length
     <BentoCard span={2} href="/about" class="bento-hero">
       <img
         src="https://avatars.githubusercontent.com/u/18483618?v=4"
-        alt="enscribe"
+        alt="Vanam-san"
         class="bento-hero-avatar"
         width="64"
         height="64"
       >
       <div class="bento-hero-name">Vanam-san</div>
-      <!-- <div class="bento-hero-subtitle">Tinkerer</div>-->
       <p class="bento-hero-bio" data-reveal>
-        Full-stack developer and open-source enthusiast with a passion for
-        building elegant solutions to complex problems. When not writing code,
-        you will find me exploring new technologies, contributing to community
-        projects, or sharing knowledge through technical writing. I believe in
-        building tools that empower others and making the web a better, more
-        accessible place for everyone.
+        Developer and open-source enthusiast. I build things, break things, and
+        sometimes write about what I learn along the way.
       </p>
       <span class="bento-link">View full profile →</span>
     </BentoCard>
