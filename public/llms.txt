@@ -1,0 +1,38 @@
+# vanam-erudite
+
+> A personal blog and portfolio built with Astro, Tailwind CSS, and shadcn/ui. Based on the astro-erudite v2 theme.
+
+Developer and open-source enthusiast who builds things, breaks things, and sometimes writes about what they learn along the way.
+
+## Sections
+
+- Blog: Technical articles and tutorials on development, tools, and learning
+- Projects: Open-source projects and experiments
+- Gallery: Photo collections
+- Setup: Hardware and software configuration for development
+- About: Background and contact information
+
+## Key Technologies
+
+- Astro 7 with Islands architecture
+- Tailwind CSS v4
+- shadcn/ui components
+- MDX for blog authoring with LaTeX math (KaTeX) support
+- Expressive Code for syntax highlighting
+- Giscus comment system on blog posts
+- Umami analytics
+
+## URLs
+
+- Homepage: https://vanam-erudite2.vercel.app
+- Blog: https://vanam-erudite2.vercel.app/blog
+- Projects: https://vanam-erudite2.vercel.app/projects
+- Gallery: https://vanam-erudite2.vercel.app/gallery
+- Setup: https://vanam-erudite2.vercel.app/setup
+- About: https://vanam-erudite2.vercel.app/about
+- RSS Feed: https://vanam-erudite2.vercel.app/rss.xml
+- Sitemap: https://vanam-erudite2.vercel.app/sitemap-index.xml
+
+## Contact
+
+- GitHub: https://github.com/vanam-san
