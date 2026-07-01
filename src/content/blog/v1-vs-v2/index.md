@@ -27,13 +27,12 @@ The grid is built with `BentoCard.astro`, a generic card wrapper that supports c
 </BentoCard>
 ```
 
-The grid contains six card types:
+The grid contains five card types:
 
 - **Hero card** (full width) — avatar, name, subtitle, and a bio with a sequential character-reveal animation
 - **Latest posts** — the two most recent blog entries with titles, descriptions, and dates
 - **Latest gallery** — a card with an auto-cycling image slideshow that crossfades every 3 seconds
 - **Projects** — the latest project with a link to the full projects page
-- **Setup** — a preview linking to the hardware/software setup page
 - **Time and weather** (full width) — live clock, local weather via wttr.in, and timezone info
 
 All cards share the same hover treatment: border highlight, background darkening, box shadow, and a 2px upward translate. The gallery card additionally scales its active slide to 1.05x on hover.
@@ -98,13 +97,9 @@ v2 has no gallery or photo collection. I added a complete gallery feature with:
 
 The gallery card styling mirrors the blog and project cards: border, background, hover effects, and image scaling.
 
-## Setup page
+## Setup as a blog post
 
-v2 has no setup or "uses" page. I added `/setup`, a dedicated page showcasing hardware and software tools.
-
-The page is static — items are defined as arrays in the frontmatter and rendered into a grid of cards. Each card has an emoji icon, a name, and a description. Cards use the same hover treatment as blog and project cards.
-
-The setup page is also linked from the bento homepage.
+The original v2 template had no setup or "uses" page. I added a dedicated setup blog post at `/blog/my-setup` showcasing hardware and software tools, instead of a standalone `/setup` page. This keeps all content in the blog collection and makes it easier to maintain alongside other posts.
 
 ## Scroll-to-top button
 
@@ -170,13 +165,13 @@ The clock updates every second using `setInterval`.
 
 | Feature | Base v2 | Added |
 | - | - | - |
-| Homepage | Dictionary entry | Bento grid with 6 card types |
+| Homepage | Dictionary entry | Bento grid with 5 card types |
 | Analytics | None | Umami (cookieless) |
 | Comments | None | Giscus (GitHub Discussions) |
 | Galleries | None | Full gallery with lightbox |
-| Setup page | None | Hardware/software showcase |
+| Setup | None | Blog post with hardware/software showcase |
 | Scroll to top | Sidebar only | Floating mobile button |
-| Card hover effects | Gallery only | Blog, projects, setup |
+| Card hover effects | Gallery only | Blog, projects |
 | Reading time + word count | Post page only | Blog listing cards too |
 | Text reveal animation | None | Hero card bio |
 | Gallery slideshow | None | Auto-cycling bento card |

@@ -1,26 +1,42 @@
 ---
 import MetaPage from "@/components/MetaPage.astro"
 import Layout from "@/layouts/Layout.astro"
+import { HERO } from "@/consts"
 ---
 
 <Layout>
-  <MetaPage slot="head" title="About Me" />
+  <MetaPage slot="head" title="About" />
   <div class="page-header">
     <h1 class="page-title">About Me</h1>
   </div>
-  <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <p class="mt-0">
-          Welcome to your about page. This is a placeholder, customize this to
-          content to tell visitors about yourself.
-        </p>
-        <p>
-          You can edit this page by modifying
-          <code class="bg-muted">src/pages/about.astro</code>.
-        </p>
-      </div>
-    </div>
+  <section class="prose">
+    <p class="mt-0">Hi, I'm <strong>{HERO.name}</strong>.</p>
+    <p>
+      {HERO.bio}
+    </p>
+    <p>
+      This is your about page. Customize it to tell visitors about yourself,
+      your background, interests, and what you do. You can edit this page by
+      modifying
+      <code>src/pages/about.astro</code>.
+    </p>
+    <p>
+      You can write about your experience, skills, what you're currently working
+      on, or anything else you'd like to share. This is your space to make a
+      personal connection with your visitors.
+    </p>
+    <h2>What I Do</h2>
+    <p>
+      Add sections about your work, hobbies, or projects. You can include links
+      to your social profiles, current projects, or anything else you'd like to
+      highlight.
+    </p>
+    <h2>Get in Touch</h2>
+    <p>
+      Feel free to reach out through any of the social links in the footer, or
+      leave a comment on a blog post. I'm always happy to connect with new
+      people.
+    </p>
   </section>
 </Layout>
 
@@ -33,5 +49,35 @@ import Layout from "@/layouts/Layout.astro"
     font-size: var(--step-2);
     font-weight: var(--font-weight-medium);
     line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  .prose {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+  }
+
+  .prose p {
+    color: var(--muted-foreground);
+    line-height: 1.7;
+  }
+
+  .prose strong {
+    color: var(--foreground);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .prose h2 {
+    font-size: var(--step-1);
+    font-weight: var(--font-weight-medium);
+    margin-block-start: var(--space-m);
+    margin-block-end: var(--space-xs);
+  }
+
+  .prose code {
+    font-size: var(--step--1);
+    background-color: var(--muted);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-md);
   }
 </style>

@@ -1,0 +1,109 @@
+---
+type Props = {
+  prevUrl?: string
+  nextUrl?: string
+  currentPage: number
+  totalPages: number
+  basePath: string
+}
+
+const { prevUrl, nextUrl, currentPage, totalPages, basePath } = Astro.props
+
+function getPageUrl(page: number): string {
+  if (page === 1) return basePath
+  return `${basePath}${page}`
+}
+---
+
+<nav class="pagination" aria-label="Pagination">
+  <ul>
+    {prevUrl && (
+      <li>
+        <a href={prevUrl} class="prev" aria-label="Previous page">
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+          </svg>
+          Prev
+        </a>
+      </li>
+    )}
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+      <li>
+        {page === currentPage ? (
+          <span class="current" aria-current="page">{page}</span>
+        ) : (
+          <a href={getPageUrl(page)} aria-label={`Page ${page}`}>{page}</a>
+        )}
+      </li>
+    ))}
+    {nextUrl && (
+      <li>
+        <a href={nextUrl} class="next" aria-label="Next page">
+          Next
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </a>
+      </li>
+    )}
+  </ul>
+</nav>
+
+<style>
+  .pagination {
+    margin-block-start: var(--space-xl);
+    padding-block-start: var(--space-m);
+    border-block-start: 1px solid var(--border);
+  }
+
+  ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-xs);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  a,
+  span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding-inline: var(--space-xs);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--foreground);
+    border-color: var(--foreground);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  }
+
+  .current {
+    color: var(--foreground);
+    border-color: var(--primary);
+    background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  }
+
+  .prev,
+  .next {
+    gap: var(--space-3xs);
+  }
+
+  @media (width < 40rem) {
+    .prev span,
+    .next span {
+      display: none;
+    }
+  }
+</style>

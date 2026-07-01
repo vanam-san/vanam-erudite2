@@ -5,7 +5,7 @@ import RSS from "@/assets/icons/rss.svg"
 import Twitter from "@/assets/icons/twitter.svg"
 
 export const SITE = {
-  title: "vanam-erudite",
+  title: "Your Site Title",
   description: "A personal blog and portfolio built with Astro.",
   locale: "en-US",
   dir: "ltr",
@@ -13,18 +13,22 @@ export const SITE = {
   defaultPostImage: "/static/1200x630.png",
 } as const
 
+export const HERO = {
+  name: "Your Name",
+  title: "Your Title",
+  bio: "A short bio about yourself. Tell visitors what you do and what you're passionate about.",
+} as const
+
 export const NAVIGATION = [
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
   { href: "/gallery", label: "Gallery" },
   { href: "/projects", label: "Projects" },
-  { href: "/authors", label: "Authors" },
-  { href: "/setup", label: "Setup" },
 ]
 
 export const SOCIALS: { href: string; label: string; icon: SvgComponent }[] = [
-  { href: "https://github.com/vanam-san", label: "GitHub", icon: GitHub },
-  { href: "https://twitter.com", label: "Twitter", icon: Twitter },
+  { href: "https://github.com/yourusername", label: "GitHub", icon: GitHub },
+  { href: "https://twitter.com/yourusername", label: "Twitter", icon: Twitter },
   { href: "mailto:your@email.com", label: "Email", icon: Email },
   { href: "/rss.xml", label: "RSS", icon: RSS },
 ]

@@ -1,0 +1,130 @@
+---
+import BlogCard from "@/components/BlogCard.astro"
+import MetaPage from "@/components/MetaPage.astro"
+import Pagination from "@/components/Pagination.astro"
+import Layout from "@/layouts/Layout.astro"
+import { getPosts, getPinnedPosts, getPostsByYear } from "@/lib/content"
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE = 20
+  const allPosts = await getPosts()
+  const pinnedPosts = await getPinnedPosts()
+
+  const pinnedIds = new Set(pinnedPosts.map((p) => p.id))
+  const regularPosts = allPosts.filter((post) => !pinnedIds.has(post.id))
+
+  const totalPages = Math.ceil(regularPosts.length / POSTS_PER_PAGE)
+
+  const paths = []
+
+  for (let page = 1; page <= totalPages; page++) {
+    const start = (page - 1) * POSTS_PER_PAGE
+    const end = start + POSTS_PER_PAGE
+    const pagePosts = regularPosts.slice(start, end)
+
+    paths.push({
+      params: { page: page === 1 ? undefined : String(page) },
+      props: {
+        page,
+        totalPages,
+        posts: pagePosts,
+        pinnedPosts: page === 1 ? pinnedPosts : [],
+      },
+    })
+  }
+
+  return paths
+}
+
+type Props = {
+  page: number
+  totalPages: number
+  posts: Awaited<ReturnType<typeof getPosts>>
+  pinnedPosts: Awaited<ReturnType<typeof getPinnedPosts>>
+}
+
+const { page, totalPages, posts, pinnedPosts } = Astro.props
+const postsByYear = getPostsByYear(posts)
+const pinnedByYear = pinnedPosts.length > 0 ? getPostsByYear(pinnedPosts) : null
+
+const basePath = "/blog/"
+const prevUrl =
+  page > 1 ? (page === 2 ? basePath : `${basePath}${page - 1}`) : undefined
+const nextUrl = page < totalPages ? `${basePath}${page + 1}` : undefined
+---
+
+<Layout>
+  <MetaPage slot="head" title={page === 1 ? "Blog" : `Blog - Page ${page}`} />
+  {pinnedByYear && pinnedByYear.size > 0 && (
+    <section class="pinned-section">
+      <h2>Pinned</h2>
+      <ul class="post-list">
+        {[...pinnedByYear.entries()].flatMap(([, pinned]) =>
+          pinned.map((post) => <BlogCard post={post} />)
+        )}
+      </ul>
+    </section>
+  )}
+
+  <div class="year-groups">
+    {[...postsByYear.entries()].map(([year, yearPosts]) => (
+      <section class="year-group">
+        <h2>{year}</h2>
+        <ul class="post-list">
+          {yearPosts.map((post) => <BlogCard post={post} />)}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  {totalPages > 1 && (
+    <Pagination
+      prevUrl={prevUrl}
+      nextUrl={nextUrl}
+      currentPage={page}
+      totalPages={totalPages}
+      basePath={basePath}
+    />
+  )}
+</Layout>
+
+<style>
+  .post-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pinned-section {
+    margin-block-end: var(--space-l);
+    padding-block-end: var(--space-s);
+    border-block-end: 1px solid var(--border);
+
+    h2 {
+      font-size: var(--step--1);
+      font-family: var(--font-mono);
+      font-weight: var(--font-weight-medium);
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-block-end: var(--space-2xs);
+    }
+  }
+
+  .year-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .year-group {
+    h2 {
+      font-size: var(--step--1);
+      font-family: var(--font-mono);
+      font-weight: var(--font-weight-medium);
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-block-end: var(--space-2xs);
+    }
+  }
+</style>

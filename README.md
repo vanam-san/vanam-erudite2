@@ -1,116 +1,195 @@
-# vanam-eruditev2
+# Astro Personal Website Template
 
-A personal portfolio and blog built with [Astro](https://astro.build/), [Tailwind CSS](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/). Based on the v2 of [astro-erudite](https://github.com/jktrn/astro-erudite) theme by [enscribe](https://enscribe.dev).
-
-> **Note:** This project was modified and configured using [opencode](https://opencode.ai) with the **MiMo V2.5 Free** LLM. I am not a coder, so there may be mistakes or incomplete configurations. Contributions and corrections are welcome!
-
-## Tech Stack
-
-| Category   | Technology                                           |
-| ---------- | ---------------------------------------------------- |
-| Framework  | [Astro](https://astro.build/)                        |
-| Styling    | [Tailwind CSS v4](https://tailwindcss.com/)          |
-| Components | [shadcn/ui](https://ui.shadcn.com/)                  |
-| Content    | [MDX](https://mdxjs.com/)                            |
-| Codeblocks | [Expressive Code](https://expressive-code.com/)      |
+A personal portfolio and blog built with [Astro](https://astro.build/). Based on the [astro-erudite](https://github.com/jktrn/astro-erudite) theme by [enscribe](https://enscribe.dev), inspired by [vanam.dev](https://vanam-ten.vercel.app/).
 
 ## Features
 
+- **Bento Grid Homepage** — Hero card, latest posts, gallery slideshow, projects, and time display
 - Astro Islands architecture for selective hydration
-- Light/dark theme support via shadcn/ui conventions
-- MDX blog authoring with LaTeX math (KaTeX)
+- Light/dark theme support
+- Blog with series/subpost support
+- Photo gallery with lightbox
+- LaTeX math rendering (Temml)
 - RSS feed and sitemap generation
 - SEO optimization with Open Graph tags
-- View Transitions for smooth route animations
+- View Transitions for smooth navigation
 - Syntax highlighting with Expressive Code
-- Giscus comment system on blog posts
-- Umami analytics integration
+- Giscus comment system (optional)
+- Umami analytics (optional)
+
+## Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Framework | [Astro](https://astro.build/) |
+| Styling | Pure CSS with CSS custom properties |
+| Markdown | `@astrojs/markdown-satteri` |
+| Codeblocks | [Expressive Code](https://expressive-code.com/) |
+| Math | [Temml](https://temml.com/) |
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+```
+
+## Customization
+
+### 1. Site Configuration
+
+Edit `src/consts.ts` to customize your site:
+
+```typescript
+export const SITE = {
+  title: "Your Site Title",
+  description: "Your site description.",
+  locale: "en-US",
+  dir: "ltr",
+  defaultPageImage: "/static/opengraph-image.png",
+  defaultPostImage: "/static/1200x630.png",
+}
+
+export const HERO = {
+  name: "Your Name",
+  title: "Your Title",
+  bio: "A short bio about yourself.",
+}
+
+export const NAVIGATION = [
+  { href: "/about", label: "About" },
+  { href: "/blog", label: "Blog" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/projects", label: "Projects" },
+]
+
+export const SOCIALS = [
+  { href: "https://github.com/yourusername", label: "GitHub", icon: GitHub },
+  { href: "https://twitter.com/yourusername", label: "Twitter", icon: Twitter },
+  { href: "mailto:your@email.com", label: "Email", icon: Email },
+  { href: "/rss.xml", label: "RSS", icon: RSS },
+]
+```
+
+### 2. Navigation
+
+Add or remove navigation items in the `NAVIGATION` array. Available pages:
+
+- `/about` — About page
+- `/blog` — Blog posts
+- `/gallery` — Photo galleries
+- `/projects` — Projects
+- `/authors` — Author profiles (accessible via URL, not in default nav)
+- `/tags` — Tag index (accessible via URL)
+
+### 3. Adding Blog Posts
+
+Create a new directory in `src/content/blog/` with an `index.md` file:
+
+```markdown
+---
+title: 'Your Post Title'
+description: 'A brief description'
+date: 2024-01-01
+authors: ['your-author-id']
+tags: ['tag1', 'tag2']
+image: './optional-image.png'
+draft: false
+---
+
+Your post content here...
+```
+
+### 4. Adding Projects
+
+Create markdown files in `src/content/projects/`:
+
+```markdown
+---
+name: 'Project Name'
+description: 'Project description'
+link: 'https://github.com/you/project'
+tags: ['TypeScript', 'React']
+startDate: 2024-01-01
+endDate: 2024-06-01
+draft: false
+---
+```
+
+### 5. Adding Galleries
+
+Create a directory in `src/content/gallery/` with an `index.md` file:
+
+```markdown
+---
+title: 'Gallery Title'
+description: 'Gallery description'
+date: 2024-01-01
+cover: './cover.jpg'
+photos:
+  - './photo1.jpg'
+  - './photo2.jpg'
+  - './photo3.jpg'
+draft: false
+---
+```
+
+Place images in the same directory as the markdown file.
+
+### 6. Adding Authors
+
+Create markdown files in `src/content/authors/`:
+
+```markdown
+---
+name: 'Your Name'
+pronouns: 'they/them'
+avatar: 'https://example.com/avatar.jpg'  # or '/path/to/local.jpg'
+bio: 'Your bio'
+mail: 'your@email.com'
+socials:
+  github: 'https://github.com/you'
+  twitter: 'https://twitter.com/you'
+  website: 'https://yoursite.com'
+---
+```
+
+## Environment Variables
+
+Create a `.env` file (copy from `.env.example`):
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `PUBLIC_UMAMI_WEBSITE_ID` | Umami website ID | No |
+| `PUBLIC_UMAMI_HOST` | Umami host domain | No |
+| `PUBLIC_GISCUS_REPO` | GitHub repo (`owner/repo`) | No |
+| `PUBLIC_GISCUS_REPO_ID` | Giscus repo ID | No |
+| `PUBLIC_GISCUS_CATEGORY` | Discussion category name | No |
+| `PUBLIC_GISCUS_CATEGORY_ID` | Giscus category ID | No |
 
 ## Project Structure
 
 ```
 src/
-  components/    # Astro and React components
-  content/       # Blog posts, authors, projects (MDX)
-  layouts/       # Page layouts
-  lib/           # Utility functions
-  pages/         # Route pages
-  styles/        # Global CSS
-public/          # Static assets (favicons, fonts, images)
+  components/     # Astro components
+  content/
+    blog/         # Blog posts
+    authors/      # Author profiles
+    projects/     # Projects
+    gallery/      # Photo galleries
+  layouts/        # Page layouts
+  lib/            # Utility functions
+  pages/          # Route pages
+  styles/         # Global CSS
+  consts.ts       # Site configuration
+public/           # Static assets
 ```
-
-## Adding Content
-
-### Blog Posts
-
-Create `.mdx` files in `src/content/blog/`:
-
-```yml
----
-title: 'Your Post Title'
-description: 'A brief description'
-date: 2024-01-01
-tags: ['tag1', 'tag2']
-image: './image.png'
-authors: ['author-name']
-draft: false
----
-```
-
-### Authors
-
-Add author profiles in `src/content/authors/` as Markdown files.
-
-### Projects
-
-Add projects in `src/content/projects/` as Markdown files.
-
-## Configuration
-
-### Environment Variables
-
-Create a `.env` file in the project root (copy from `.env.example`):
-
-```bash
-cp .env.example .env
-```
-
-| Variable | Description | Required |
-| --- | --- | --- |
-| `PUBLIC_UMAMI_WEBSITE_ID` | Your Umami website ID | No (analytics disabled if empty) |
-| `PUBLIC_UMAMI_HOST` | Umami host domain | No (defaults to `cloud.umami.is`) |
-| `PUBLIC_GISCUS_REPO` | GitHub repo in `owner/repo` format | No (comments disabled if empty) |
-| `PUBLIC_GISCUS_REPO_ID` | Giscus repo ID from giscus.app | No (comments disabled if empty) |
-| `PUBLIC_GISCUS_CATEGORY` | Discussion category name | No (defaults to `Comments`) |
-| `PUBLIC_GISCUS_CATEGORY_ID` | Giscus category ID from giscus.app | No (comments disabled if empty) |
-
-> **Note:** `.env` is gitignored. Never commit secrets to version control.
-
-### Umami Analytics
-
-1. Sign up at [Umami Cloud](https://cloud.umami.is) or self-host an [Umami instance](https://github.com/umami-software/umami)
-2. Add a website in the Umami dashboard and copy the **Website ID**
-3. Set `PUBLIC_UMAMI_WEBSITE_ID` in your `.env`
-4. If self-hosted, set `PUBLIC_UMAMI_HOST` to your domain (e.g., `umami.yourdomain.com`)
-
-Analytics only load when `PUBLIC_UMAMI_WEBSITE_ID` is set. SPA page-view tracking is handled automatically via View Transitions.
-
-### Giscus Comments
-
-1. Enable **Discussions** on your GitHub repo
-2. Go to [giscus.app](https://giscus.app) and enter your repo details
-3. Select your Discussion category (must match exactly)
-4. Copy the generated values into your `.env`:
-   - `PUBLIC_GISCUS_REPO` — your repo in `owner/repo` format
-   - `PUBLIC_GISCUS_REPO_ID` — the `data-repo-id` value
-   - `PUBLIC_GISCUS_CATEGORY` — the discussion category name
-   - `PUBLIC_GISCUS_CATEGORY_ID` — the `data-category-id` value
-
-Comments only render on blog posts when `repo`, `repoId`, and `categoryId` are all set. Theme syncs automatically with light/dark mode.
-
-### Site Metadata
-
-Edit `src/consts.ts` to update site metadata, navigation links, and social links. Social link placeholders (`your-username`, `your-handle`, etc.) must be replaced with your actual profiles.
 
 ## License
 
@@ -118,4 +197,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-Built with the [astro-erudite](https://github.com/jktrn/astro-erudite) theme, modified using [opencode](https://opencode.ai) with MiMo V2.5 Free LLM.
+Built with [astro-erudite](https://github.com/jktrn/astro-erudite) theme.

@@ -31,6 +31,7 @@ const blog = defineCollection({
       tags: z.array(z.string()).optional(),
       authors: z.array(reference("authors")),
       image: image().optional(),
+      pinned: z.boolean().optional(),
       draft: z.boolean().optional(),
     }),
 })

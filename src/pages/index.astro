@@ -1,79 +1,272 @@
 ---
-import BlogCard from "@/components/BlogCard.astro"
-import GalleryCard from "@/components/GalleryCard.astro"
+import BentoCard from "@/components/BentoCard.astro"
 import MetaPage from "@/components/MetaPage.astro"
 import ScrollToTop from "@/components/ScrollToTop.astro"
 import Layout from "@/layouts/Layout.astro"
 import { getPosts, getRecentGalleries } from "@/lib/content"
+import { Image } from "astro:assets"
+import { getCollection } from "astro:content"
+import { HERO } from "@/consts"
 
 const posts = await getPosts()
-const recentPosts = posts.slice(0, 5)
-const recentGalleries = await getRecentGalleries(4)
+const recentPosts = posts.slice(0, 3)
+const recentGalleries = await getRecentGalleries(1)
+const latestGallery = recentGalleries[0]
+
+const projects = (
+  await getCollection("projects", ({ data }) => !data.draft)
+).sort(
+  (a, b) =>
+    (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0),
+)
 ---
 
 <Layout>
   <MetaPage slot="head" />
   <ScrollToTop floating />
 
-  <section>
-    <h2>Recent Posts</h2>
-    <ul class="post-list">
-      {recentPosts.map((post) => <BlogCard post={post} />)}
-    </ul>
-    <a href="/blog">View all posts &rarr;</a>
-  </section>
+  <div class="bento-grid">
+    <!-- Hero Card (Full Width) -->
+    <BentoCard span={2} href="/about" class="bento-hero">
+      <div class="bento-hero-name">{HERO.name}</div>
+      <div class="bento-hero-subtitle">{HERO.title}</div>
+      <p class="bento-hero-bio" data-reveal>{HERO.bio}</p>
+      <span class="bento-link">About me &rarr;</span>
+    </BentoCard>
 
-  {recentGalleries.length > 0 && (
-    <section>
-      <h2>Recent Galleries</h2>
-      <ul class="gallery-list">
-        {recentGalleries.map((gallery) => (
-          <GalleryCard gallery={gallery} />
+    <!-- Latest Posts Card (Half Width) -->
+    <BentoCard class="bento-posts">
+      <div class="bento-label">Latest Posts</div>
+      <ul class="bento-post-list">
+        {recentPosts.map((post) => (
+          <li class="bento-post">
+            <a href={`/blog/${post.id}`}>{post.data.title}</a>
+          </li>
         ))}
       </ul>
-      <a href="/gallery">View all galleries &rarr;</a>
-    </section>
-  )}
+      <a href="/blog" class="bento-link">Read all &rarr;</a>
+    </BentoCard>
+
+    <!-- Latest Gallery Card (Half Width) -->
+    {latestGallery && (
+      <BentoCard href={`/gallery/${latestGallery.id}`} class="bento-gallery">
+        <div class="bento-gallery-slideshow" data-slideshow>
+          {latestGallery.data.photos.slice(0, 4).map((photo, i) => (
+            <Image
+              src={photo}
+              alt={`${latestGallery.data.title} - Photo ${i + 1}`}
+              width={1280}
+              height={672}
+              loading="lazy"
+              class:list={["bento-gallery-slide", i === 0 && "active"]}
+            />
+          ))}
+        </div>
+        <div class="bento-gallery-text">
+          <div class="bento-label">Latest Gallery</div>
+          <div class="bento-gallery-title">{latestGallery.data.title}</div>
+          <div class="bento-gallery-count">
+            {latestGallery.data.photos.length} photos
+          </div>
+          <span class="bento-link">View gallery &rarr;</span>
+        </div>
+      </BentoCard>
+    )}
+
+    <!-- Projects Card (Full Width) -->
+    <BentoCard span={2} class="bento-projects">
+      <div class="bento-label">Projects</div>
+      <ul class="bento-project-list">
+        {projects.map((project) => (
+          <li class="bento-project">
+            <a href={project.data.link} target="_blank" rel="noopener noreferrer">{project.data.name}</a>
+            {project.data.tags && project.data.tags.length > 0 && (
+              <span class="bento-project-tags" aria-hidden="true">
+                {project.data.tags.map((tag) => (
+                  <span class="bento-project-tag">{tag}</span>
+                ))}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+      <a href="/projects" class="bento-link">View all &rarr;</a>
+    </BentoCard>
+
+    <!-- Time/Weather Card (Full Width) -->
+    <BentoCard span={2} class="bento-time">
+      <div class="bento-time-section">
+        <div class="bento-time-label">Local Time</div>
+        <div class="bento-time-value" id="bento-time">--:--:-- --</div>
+        <div class="bento-time-date" id="bento-date">---</div>
+      </div>
+      <div class="bento-time-section">
+        <div class="bento-time-label">Weather</div>
+        <div class="bento-weather-value" id="bento-weather">☀️ --°C</div>
+        <div class="bento-weather-desc" id="bento-weather-desc">Loading...</div>
+      </div>
+      <div class="bento-time-section">
+        <div class="bento-time-label" id="bento-timezone-name">Timezone</div>
+        <div class="bento-timezone-offset" id="bento-timezone-offset">
+          --:--
+        </div>
+      </div>
+    </BentoCard>
+  </div>
 </Layout>
 
-<style>
-  section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-    margin-block-end: var(--space-xl);
+<style is:global>
+  .bento-hero-bio [data-reveal-char] {
+    opacity: 0.2;
+    transition: opacity 0.4s ease-out;
   }
 
-  h2 {
-    font-size: var(--step-1);
-    font-weight: var(--font-weight-medium);
-  }
-
-  .post-list {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-m);
-  }
-
-  .gallery-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-m);
-  }
-
-  @media (width < 40rem) {
-    .gallery-list {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  a {
-    font-size: var(--step--1);
-    color: var(--muted-foreground);
-    transition: color 0.3s;
-
-    &:hover {
-      color: var(--foreground);
-    }
+  .bento-hero-bio [data-reveal-char].revealed {
+    opacity: 1;
   }
 </style>
+
+<script>
+  function initSequentialReveal() {
+    const textElements = document.querySelectorAll<HTMLElement>(
+      "[data-reveal]:not([data-reveal-done])",
+    )
+    const totalDuration = 3000
+
+    textElements.forEach((el) => {
+      el.setAttribute("data-reveal-done", "")
+      const text = el.textContent || ""
+      el.textContent = ""
+      const chars = text.split("")
+
+      chars.forEach((char) => {
+        const span = document.createElement("span")
+        span.textContent = char
+        span.setAttribute("data-reveal-char", "")
+        el.appendChild(span)
+      })
+
+      const spans = el.querySelectorAll<HTMLElement>("[data-reveal-char]")
+      const delayPerChar = totalDuration / spans.length
+
+      spans.forEach((span, i) => {
+        setTimeout(() => {
+          span.classList.add("revealed")
+        }, i * delayPerChar)
+      })
+    })
+  }
+
+  document.addEventListener("astro:page-load", initSequentialReveal)
+  document.addEventListener("astro:after-swap", initSequentialReveal)
+
+  initSequentialReveal()
+</script>
+
+<script>
+  function initSlideshow() {
+    const slideshows = document.querySelectorAll<HTMLElement>(
+      "[data-slideshow]:not([data-slideshow-done])",
+    )
+
+    slideshows.forEach((slideshow) => {
+      slideshow.setAttribute("data-slideshow-done", "")
+      const slides = slideshow.querySelectorAll<HTMLImageElement>(
+        ".bento-gallery-slide",
+      )
+      if (slides.length <= 1) return
+
+      let currentIndex = 0
+      setInterval(() => {
+        slides[currentIndex].classList.remove("active")
+        currentIndex = (currentIndex + 1) % slides.length
+        slides[currentIndex].classList.add("active")
+      }, 3000)
+    })
+  }
+
+  document.addEventListener("astro:page-load", initSlideshow)
+  document.addEventListener("astro:after-swap", initSlideshow)
+
+  initSlideshow()
+</script>
+
+<script>
+  function updateTime() {
+    const now = new Date()
+
+    // Time
+    const timeEl = document.getElementById("bento-time")
+    if (timeEl) {
+      timeEl.textContent = now.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      })
+    }
+
+    // Date
+    const dateEl = document.getElementById("bento-date")
+    if (dateEl) {
+      dateEl.textContent = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })
+    }
+
+    // Timezone
+    const tzNameEl = document.getElementById("bento-timezone-name")
+    const tzOffsetEl = document.getElementById("bento-timezone-offset")
+    if (tzNameEl && tzOffsetEl) {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const offset = now.getTimezoneOffset()
+      const offsetHours = Math.floor(Math.abs(offset) / 60)
+      const offsetMinutes = Math.abs(offset) % 60
+      const offsetSign = offset <= 0 ? "+" : "-"
+
+      tzNameEl.textContent = tz.split("/").pop()?.replace(/_/g, " ") ?? tz
+      tzOffsetEl.textContent = `UTC${offsetSign}${offsetHours}:${offsetMinutes.toString().padStart(2, "0")}`
+    }
+  }
+
+  // Weather using wttr.in (no API key needed)
+  async function fetchWeather() {
+    try {
+      const weatherEl = document.getElementById("bento-weather")
+      const descEl = document.getElementById("bento-weather-desc")
+      if (!weatherEl || !descEl) return
+
+      const res = await fetch("https://wttr.in/?format=j1")
+      const data = await res.json()
+      const current = data.current_condition[0]
+
+      const temp = current.temp_C
+      const desc = current.weatherDesc[0].value
+      const code = current.weatherCode
+
+      // Map weather code to emoji
+      let emoji = "☀️"
+      if (code === "116") emoji = "⛅"
+      else if (code === "119" || code === "122") emoji = "☁️"
+      else if (code === "176" || code === "263" || code === "266") emoji = "🌧️"
+      else if (code === "200" || code === "386" || code === "389") emoji = "⛈️"
+      else if (code === "227" || code === "230") emoji = "❄️"
+      else if (code === "248" || code === "260") emoji = "🌫️"
+      else if (code === "293" || code === "296" || code === "299") emoji = "🌦️"
+
+      weatherEl.textContent = `${emoji} ${temp}°C`
+      descEl.textContent = desc
+    } catch {
+      const weatherEl = document.getElementById("bento-weather")
+      const descEl = document.getElementById("bento-weather-desc")
+      if (weatherEl) weatherEl.textContent = "🌡️ --°C"
+      if (descEl) descEl.textContent = "Weather unavailable"
+    }
+  }
+
+  updateTime()
+  setInterval(updateTime, 1000)
+  fetchWeather()
+</script>

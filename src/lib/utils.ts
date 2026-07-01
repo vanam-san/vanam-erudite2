@@ -7,6 +7,14 @@ export function formatDate(date: Date): string {
   }).format(date)
 }
 
+export function formatShortDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  }).format(date)
+}
+
 export const isSubpost = (id: string) => id.includes("/")
 
 export const subpostSlug = (id: string) => id.split("/")[1]

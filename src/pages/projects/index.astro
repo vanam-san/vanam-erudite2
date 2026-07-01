@@ -4,36 +4,65 @@ import ProjectCard from "@/components/ProjectCard.astro"
 import Layout from "@/layouts/Layout.astro"
 import { getCollection } from "astro:content"
 
-const projects = (await getCollection("projects", ({ data }) => !data.draft)).sort(
+const projects = (
+  await getCollection("projects", ({ data }) => !data.draft)
+).sort(
   (a, b) =>
     (b.data.startDate?.getTime() ?? 0) - (a.data.startDate?.getTime() ?? 0),
 )
+
+function getProjectsByYear(
+  projects: Awaited<ReturnType<typeof getCollection<"projects">>>,
+) {
+  const grouped = new Map<number, typeof projects>()
+  for (const project of projects) {
+    const year = project.data.startDate?.getFullYear() ?? 0
+    const group = grouped.get(year)
+    if (group) group.push(project)
+    else grouped.set(year, [project])
+  }
+  return new Map([...grouped].sort(([a], [b]) => b - a))
+}
+
+const projectsByYear = getProjectsByYear(projects)
 ---
 
 <Layout>
   <MetaPage slot="head" title="Projects" />
-  <div class="page-header">
-    <h1 class="page-title">Projects</h1>
+
+  <div class="year-groups">
+    {[...projectsByYear.entries()].map(([year, yearProjects]) => (
+      <section class="year-group">
+        <h2>{year}</h2>
+        <ul class="project-list">
+          {yearProjects.map((project) => <ProjectCard project={project} />)}
+        </ul>
+      </section>
+    ))}
   </div>
-  <ul>
-    {projects.map((project) => <ProjectCard project={project} />)}
-  </ul>
 </Layout>
 
 <style>
-  .page-header {
-    margin-block-end: var(--space-m);
-  }
-
-  .page-title {
-    font-size: var(--step-2);
-    font-weight: var(--font-weight-medium);
-    line-height: calc(var(--leading-offset) + 1em);
-  }
-
-  ul {
+  .project-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-m);
+  }
+
+  .year-groups {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .year-group {
+    h2 {
+      font-size: var(--step--1);
+      font-family: var(--font-mono);
+      font-weight: var(--font-weight-medium);
+      color: var(--muted-foreground);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-block-end: var(--space-2xs);
+    }
   }
 </style>

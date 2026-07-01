@@ -2,6 +2,24 @@ import { SITE } from "@/consts"
 import { getCollection, type CollectionEntry } from "astro:content"
 import { isSubpost } from "@/lib/utils"
 
+export async function getPinnedPosts(): Promise<CollectionEntry<"blog">[]> {
+  const posts = await getPosts()
+  return posts.filter((post) => post.data.pinned === true)
+}
+
+export function getPostsByYear(
+  posts: CollectionEntry<"blog">[],
+): Map<number, CollectionEntry<"blog">[]> {
+  const grouped = new Map<number, CollectionEntry<"blog">[]>()
+  for (const post of posts) {
+    const year = post.data.date.getFullYear()
+    const group = grouped.get(year)
+    if (group) group.push(post)
+    else grouped.set(year, [post])
+  }
+  return new Map([...grouped].sort(([a], [b]) => b - a))
+}
+
 export async function getGalleries(): Promise<CollectionEntry<"gallery">[]> {
   const galleries = await getCollection("gallery", ({ data }) => !data.draft)
   return galleries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
