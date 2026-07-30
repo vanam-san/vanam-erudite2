@@ -31,7 +31,7 @@ a.bento-card:hover {
   border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
   background-color: color-mix(in oklab, var(--muted) 55%, transparent);
   box-shadow:
-    var(--glow-forest),
+    var(--glow-primary),
     0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent);
   transform: translateY(-2px);
 }
