@@ -30,6 +30,11 @@ const projectsByYear = getProjectsByYear(projects)
 <Layout>
   <MetaPage slot="head" title="Projects" />
 
+  <div class="page-header">
+    <h1 class="page-title">Projects</h1>
+    <p class="page-desc">A selection of open source and personal projects I've built or contributed to.</p>
+  </div>
+
   <div class="year-groups">
     {[...projectsByYear.entries()].map(([year, yearProjects]) => (
       <section class="year-group">
@@ -43,6 +48,23 @@ const projectsByYear = getProjectsByYear(projects)
 </Layout>
 
 <style>
+  .page-header {
+    margin-block-end: var(--space-m);
+  }
+
+  .page-title {
+    font-size: var(--step-2);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-tighter);
+    line-height: calc(var(--leading-offset) + 1em);
+  }
+
+  .page-desc {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    margin-block-start: var(--space-2xs);
+  }
+
   .project-list {
     display: flex;
     flex-direction: column;

@@ -25,6 +25,19 @@ export async function getGalleries(): Promise<CollectionEntry<"gallery">[]> {
   return galleries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 }
 
+export function getGalleriesByYear(
+  galleries: CollectionEntry<"gallery">[],
+): Map<number, CollectionEntry<"gallery">[]> {
+  const grouped = new Map<number, CollectionEntry<"gallery">[]>()
+  for (const gallery of galleries) {
+    const year = gallery.data.date.getFullYear()
+    const group = grouped.get(year)
+    if (group) group.push(gallery)
+    else grouped.set(year, [gallery])
+  }
+  return new Map([...grouped].sort(([a], [b]) => b - a))
+}
+
 export async function getRecentGalleries(
   count: number,
 ): Promise<CollectionEntry<"gallery">[]> {

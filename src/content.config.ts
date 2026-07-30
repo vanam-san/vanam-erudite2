@@ -66,6 +66,7 @@ const gallery = defineCollection({
       date: z.coerce.date(),
       cover: image(),
       photos: z.array(image()),
+      tags: z.array(z.string()).optional(),
       draft: z.boolean().optional(),
     }),
 })
