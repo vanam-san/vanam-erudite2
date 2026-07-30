@@ -1,7 +1,7 @@
 ---
 title: "Customizing astro-erudite: What I Added to the Base Template"
 description: "A walkthrough of every feature added on top of the stock astro-erudite v2 template, from the bento homepage to Giscus comments."
-date: 2026-06-14
+date: 2026-07-30
 authors:
   - vanam
 tags:
@@ -161,6 +161,117 @@ const current = data.current_condition[0]
 
 The clock updates every second using `setInterval`.
 
+## Custom color theme — Midnight Galaxy
+
+The base erudite template uses a simple light/dark scheme with neutral grays. I replaced it with a custom Midnight Galaxy palette — deep purples, cosmic blues, and lavender accents:
+
+```css
+:root {
+  --background: var(--gray-1);   /* #0e0a14 dark, #f5f3f8 light */
+  --primary:    var(--lavender-9); /* #6b5a90 dark, #a490c2 light */
+  --secondary:  var(--cosmic-9);  /* #5a5eaf dark, #4a4e8f light */
+}
+```
+
+The palette uses `light-dark()` for automatic light/dark mode support — no media query duplication. Each color is defined as a pair: a light variant and a dark variant resolved by the browser's `color-scheme`.
+
+Glow effects are layered on interactive elements:
+
+```css
+--glow-purple: 0 0 20px color-mix(in oklab, var(--lavender-9) 25%, transparent);
+--glow-cosmic: 0 0 20px color-mix(in oklab, var(--cosmic-9) 20%, transparent);
+```
+
+Cards, sidebar links, and the footer gradient all reference these tokens, keeping the visual language consistent.
+
+## Typography — Fraunces display font
+
+The base template uses a single sans-serif stack everywhere. I split typography into two roles:
+
+- **Display (headings):** Fraunces — an optical variable serif with character, loaded via Google Fonts
+- **Body:** IBM Plex Sans — already in the base, kept for readability
+- **Mono:** IBM Plex Mono — for code and metadata
+
+Fraunces is applied via a `--font-display` custom property and used on the sidebar brand, page titles, and bento hero name. The heading scale uses tighter tracking (`-0.02em` on large sizes) and a heavier weight (700) to create contrast against the body text.
+
+```css
+--font-display: "Fraunces", ui-serif, Georgia, serif;
+```
+
+The font is preconnected in `MetaHead.astro` and defined in `fonts.css` alongside the existing IBM Plex families.
+
+## Vertical bar hover effect on list cards
+
+Blog, gallery, and project cards all share a list-item layout (date | title | tags | meta). I added a 2px vertical accent bar on the left edge that animates in on hover — inspired by the Blowfish theme used on vanam.dev.
+
+Each `<li>` gets `position: relative` and a `::before` pseudo-element:
+
+```css
+li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--space-2xs);
+  bottom: var(--space-2xs);
+  width: 2px;
+  background: var(--primary);
+  opacity: 0;
+  transform: scaleY(0);
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+li:hover::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+```
+
+The bar scales from center using `scaleY`, giving a smooth reveal effect. The same pattern is applied to bento card post/project lists using the secondary (cosmic blue) accent.
+
+## Unified tag system
+
+The base v2 template has no tag infrastructure. I built a unified tag system that spans all three collections:
+
+- **`getAllTags()`** in `content.ts` collects tags from blog, gallery, and projects into a single `Map<string, TagGroup>`
+- **Tags index** at `/tags` shows all tags with total counts across collections
+- **Tag detail pages** at `/tags/[id]` render matching items grouped by type (blog, gallery, projects)
+- All tags are normalized to lowercase for consistency
+
+```ts
+type TagGroup = {
+  blog: CollectionEntry<"blog">[]
+  gallery: CollectionEntry<"gallery">[]
+  projects: CollectionEntry<"projects">[]
+}
+```
+
+Tags are clickable on every card and on the tag detail pages, creating cross-collection navigation.
+
+## Gallery list layout with year sorting
+
+The gallery started as a grid of cards with cover images. I converted it to a list layout matching the blog and project cards:
+
+- Date, title, tags, photo count, and optional description in a grid
+- Galleries sorted by year with year group headings
+- Vertical bar hover effect matching other list cards
+- Tags normalized to lowercase on display
+
+The `getGalleriesByYear()` utility groups galleries by year and returns a `Map<number, Gallery[]>` sorted descending.
+
+## Blog card alignment
+
+The blog card was originally a different layout from gallery and project cards. I aligned all three to share the same structure:
+
+| Column | Content |
+|--------|---------|
+| 1 (4.5rem) | Date in monospace |
+| 2 (1fr) | Title as link |
+| Full width | Tags in mono |
+| Full width | Meta (words/time or photo count) |
+
+Blog cards show `words · min read`, gallery cards show `N photos`, and project cards show an optional description. All use the same grid template, border treatment, and hover effects.
+
 ## Summary
 
 | Feature | Base v2 | Added |
@@ -171,10 +282,14 @@ The clock updates every second using `setInterval`.
 | Galleries | None | Full gallery with lightbox |
 | Setup | None | Blog post with hardware/software showcase |
 | Scroll to top | Sidebar only | Floating mobile button |
-| Card hover effects | Gallery only | Blog, projects |
+| Card hover effects | Gallery only | Blog, projects, vertical bar accent |
 | Reading time + word count | Post page only | Blog listing cards too |
 | Text reveal animation | None | Hero card bio |
 | Gallery slideshow | None | Auto-cycling bento card |
 | Weather widget | None | Live wttr.in data |
+| Color theme | Default gray | Midnight Galaxy purple palette |
+| Typography | Single sans stack | Fraunces display + IBM Plex body |
+| Tag system | None | Unified cross-collection tags |
+| Gallery layout | Grid cards | List with year sorting |
 
 Every addition follows the same principle as the base template: minimal JavaScript, native CSS, and no unnecessary dependencies. The Giscus and Umami integrations are the only external services, and both are optional — the site works fully without them configured.
