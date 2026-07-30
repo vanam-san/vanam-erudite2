@@ -5,7 +5,7 @@ import { type CollectionEntry } from "astro:content"
 type Props = { project: CollectionEntry<"projects">; index?: number }
 
 const { project, index = 0 } = Astro.props
-const { name, description, link, tags, startDate, endDate } = project.data
+const { name, description, link, tags, startDate } = project.data
 ---
 
 <li class:list={["animate-in", `animate-in-delay-${Math.min(index + 1, 8)}`]}>

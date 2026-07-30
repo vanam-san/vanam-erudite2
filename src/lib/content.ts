@@ -73,11 +73,6 @@ export async function getProjects(): Promise<CollectionEntry<"projects">[]> {
   return getCollection("projects", ({ data }) => !data.draft)
 }
 
-type TaggableEntry =
-  | CollectionEntry<"blog">
-  | CollectionEntry<"gallery">
-  | CollectionEntry<"projects">
-
 export type TagGroup = {
   blog: CollectionEntry<"blog">[]
   gallery: CollectionEntry<"gallery">[]

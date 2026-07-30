@@ -1,33 +1,33 @@
 :root {
-  /* ═══ Forest Canopy Theme ═══ */
-  /* Rich woodland green palette */
+  /* ═══ Ocean Depths Theme ═══ */
+  /* Abyssal dark & bioluminescent palette */
 
-  --gray-1:  light-dark(#f4f7f4, #0a120a);
-  --gray-2:  light-dark(#e8ede8, #101c10);
-  --gray-3:  light-dark(#dde5dd, #182618);
-  --gray-4:  light-dark(#d0dbd0, #203020);
-  --gray-5:  light-dark(#c0ceC0, #2a3c2a);
-  --gray-6:  light-dark(#a8bca8, #364a36);
-  --gray-7:  light-dark(#8fa88f, #445a44);
-  --gray-8:  light-dark(#789078, #546c54);
-  --gray-9:  light-dark(#627862, #647c64);
-  --gray-10: light-dark(#506550, #788e78);
-  --gray-11: light-dark(#3e523e, #92a892);
-  --gray-12: light-dark(#1a2e1a, #d8ecd8);
+  --gray-1:  light-dark(#f0f4f8, #0b1120);
+  --gray-2:  light-dark(#e4eaf2, #111928);
+  --gray-3:  light-dark(#d8e2ee, #182132);
+  --gray-4:  light-dark(#ccd8e6, #1f2b3c);
+  --gray-5:  light-dark(#b8c8da, #283648);
+  --gray-6:  light-dark(#a0b4c8, #334560);
+  --gray-7:  light-dark(#889cb4, #405578);
+  --gray-8:  light-dark(#7084a0, #506890);
+  --gray-9:  light-dark(#5a6e8a, #6078a0);
+  --gray-10: light-dark(#485a74, #7890b0);
+  --gray-11: light-dark(#384860, #94aec8);
+  --gray-12: light-dark(#1a2538, #dce6f0);
 
-  /* Fern — primary accent */
-  --fern-3:  light-dark(#ddf0dd, #0a200a);
-  --fern-5:  light-dark(#b8d8b8, #1a3a1a);
-  --fern-7:  light-dark(#88b888, #2a5a2a);
-  --fern-9:  light-dark(#5a985a, #3a7a3a);
-  --fern-11: light-dark(#4a884a, #6ab06a);
+  /* Cyan — primary accent (bioluminescent) */
+  --cyan-3:  light-dark(#d0f4fa, #042f3a);
+  --cyan-5:  light-dark(#a0e8f6, #0a4a5a);
+  --cyan-7:  light-dark(#5ad4ee, #0e6880);
+  --cyan-9:  light-dark(#0891b2, #22d3ee);
+  --cyan-11: light-dark(#0678a0, #38e0f8);
 
-  /* Moss — secondary accent */
-  --moss-3:  light-dark(#d8ead8, #142014);
-  --moss-5:  light-dark(#b0d0b0, #243824);
-  --moss-7:  light-dark(#88b888, #345034);
-  --moss-9:  light-dark(#609860, #447044);
-  --moss-11: light-dark(#4a804a, #689868);
+  /* Lume — secondary accent (bioluminescent green) */
+  --lume-3:  light-dark(#d0fae8, #042e20);
+  --lume-5:  light-dark(#a0f0d4, #0a4a36);
+  --lume-7:  light-dark(#5ae0b4, #108060);
+  --lume-9:  light-dark(#059669, #34d399);
+  --lume-11: light-dark(#04805a, #50e8b0);
 
   --red-9:  light-dark(#c44a4a, #e05858);
   --red-11: light-dark(#b03a3a, #f06868);
@@ -37,19 +37,19 @@
 
   --background:         var(--gray-1);
   --foreground:         var(--gray-12);
-  --primary:            var(--fern-9);
+  --primary:            var(--cyan-9);
   --primary-foreground: #ffffff;
-  --secondary:          var(--moss-9);
+  --secondary:          var(--lume-9);
   --muted:              var(--gray-3);
   --muted-foreground:   var(--gray-11);
   --destructive:        var(--red-11);
   --border:             var(--gray-5);
-  --ring:               var(--fern-7);
+  --ring:               var(--cyan-7);
 
   /* Glow effects */
-  --glow-forest: 0 0 20px color-mix(in oklab, var(--fern-9) 25%, transparent);
-  --glow-moss: 0 0 20px color-mix(in oklab, var(--moss-9) 20%, transparent);
-  --glow-subtle: 0 0 12px color-mix(in oklab, var(--fern-7) 15%, transparent);
+  --glow-primary: 0 0 20px color-mix(in oklab, var(--cyan-9) 25%, transparent);
+  --glow-secondary: 0 0 20px color-mix(in oklab, var(--lume-9) 20%, transparent);
+  --glow-subtle: 0 0 12px color-mix(in oklab, var(--cyan-7) 15%, transparent);
 
   /* Grain */
   --grain-opacity: 0.02;
@@ -71,7 +71,7 @@
   border-color: var(--border);
 
   &:focus-visible {
-    outline: 2px solid var(--lavender-7);
+    outline: 2px solid var(--ring);
     outline-offset: 0.25rem;
     border-radius: var(--radius-sm);
   }
