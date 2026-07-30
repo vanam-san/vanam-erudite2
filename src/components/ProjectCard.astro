@@ -2,13 +2,13 @@
 import { formatShortDate } from "@/lib/utils"
 import { type CollectionEntry } from "astro:content"
 
-type Props = { project: CollectionEntry<"projects"> }
+type Props = { project: CollectionEntry<"projects">; index?: number }
 
-const { project } = Astro.props
+const { project, index = 0 } = Astro.props
 const { name, description, link, tags, startDate, endDate } = project.data
 ---
 
-<li>
+<li class:list={["animate-in", `animate-in-delay-${Math.min(index + 1, 8)}`]}>
   <time datetime={startDate?.toISOString()}>
     {startDate ? formatShortDate(startDate) : "—"}
   </time>
@@ -48,12 +48,15 @@ const { name, description, link, tags, startDate, endDate } = project.data
     grid-column: 2;
     font-size: var(--step-0);
     font-weight: var(--font-weight-medium);
-    line-height: calc(var(--leading-offset) + 1em);
+    line-height: 1.2;
     color: inherit;
-    transition: color 0.15s ease;
+    transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
 
     &:hover {
       color: var(--primary);
+      text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
     }
   }
 

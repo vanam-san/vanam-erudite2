@@ -12,20 +12,28 @@
   overflow: hidden;
   border-radius: var(--radius-xl);
   border: 1px solid var(--border);
-  background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+  background-color: color-mix(in oklab, var(--muted) 25%, transparent);
   padding: var(--space-m);
   transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.bento-card:nth-child(1) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.00s backwards; }
+.bento-card:nth-child(2) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.06s backwards; }
+.bento-card:nth-child(3) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s backwards; }
+.bento-card:nth-child(4) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards; }
+.bento-card:nth-child(5) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.24s backwards; }
+
 a.bento-card:hover {
-  border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
-  background-color: color-mix(in oklab, var(--muted) 60%, transparent);
-  box-shadow: 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
-  transform: translateY(-1px);
+  border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
+  background-color: color-mix(in oklab, var(--muted) 55%, transparent);
+  box-shadow:
+    0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent),
+    0 4px 20px color-mix(in oklab, var(--primary) 8%, transparent);
+  transform: translateY(-2px);
 }
 
 .bento-card[data-span="2"] {
@@ -80,10 +88,12 @@ a:hover > .bento-link {
 }
 
 .bento-hero-name {
+  font-family: var(--font-display);
   font-size: var(--step-2);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: var(--tracking-tighter);
-  line-height: calc(var(--leading-offset) + 1em);
+  font-weight: 700;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   margin: 0;
 }
 
@@ -91,6 +101,7 @@ a:hover > .bento-link {
   font-size: var(--step--1);
   color: var(--primary);
   font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
   margin: 0;
 }
 
@@ -99,7 +110,7 @@ a:hover > .bento-link {
   color: var(--muted-foreground);
   max-inline-size: 40rem;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 /* Posts Card */

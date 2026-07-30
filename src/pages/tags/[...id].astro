@@ -1,21 +1,30 @@
 ---
 import BlogCard from "@/components/BlogCard.astro"
+import GalleryCard from "@/components/GalleryCard.astro"
+import ProjectCard from "@/components/ProjectCard.astro"
 import MetaPage from "@/components/MetaPage.astro"
 import Layout from "@/layouts/Layout.astro"
-import { getTags } from "@/lib/content"
-import type { CollectionEntry } from "astro:content"
+import { getAllTags } from "@/lib/content"
 
 export async function getStaticPaths() {
-  const tags = await getTags()
-  return [...tags].map(([tag, posts]) => ({
+  const tags = await getAllTags()
+  return [...tags].map(([tag, group]) => ({
     params: { id: tag },
-    props: { tag, posts },
+    props: { tag, group },
   }))
 }
 
-type Props = { tag: string; posts: CollectionEntry<"blog">[] }
+type Props = {
+  tag: string
+  group: {
+    blog: import("astro:content").CollectionEntry<"blog">[]
+    gallery: import("astro:content").CollectionEntry<"gallery">[]
+    projects: import("astro:content").CollectionEntry<"projects">[]
+  }
+}
 
-const { tag, posts } = Astro.props
+const { tag, group } = Astro.props
+const totalCount = group.blog.length + group.gallery.length + group.projects.length
 ---
 
 <Layout
@@ -26,19 +35,82 @@ const { tag, posts } = Astro.props
 >
   <MetaPage
     slot="head"
-    title={`Posts tagged "${tag}"`}
-    description={`A collection of posts tagged with ${tag}.`}
+    title={`Tagged "${tag}"`}
+    description={`Content tagged with ${tag}.`}
     noindex
   />
-  <ul>
-    {posts.map((post) => <BlogCard post={post} />)}
-  </ul>
+  <div class="page-header animate-in">
+    <h1 class="page-title">#{tag}</h1>
+    <p class="page-desc">{totalCount} item{totalCount === 1 ? "" : "s"} across blog, gallery, and projects.</p>
+  </div>
+
+  {group.blog.length > 0 && (
+    <section class="tag-section animate-in">
+      <h2>Blog</h2>
+      <ul class="post-list">
+        {group.blog.map((post, i) => <BlogCard post={post} index={i} />)}
+      </ul>
+    </section>
+  )}
+
+  {group.gallery.length > 0 && (
+    <section class="tag-section animate-in">
+      <h2>Gallery</h2>
+      <ul class="post-list">
+        {group.gallery.map((gallery, i) => <GalleryCard gallery={gallery} index={i} />)}
+      </ul>
+    </section>
+  )}
+
+  {group.projects.length > 0 && (
+    <section class="tag-section animate-in">
+      <h2>Projects</h2>
+      <ul class="post-list">
+        {group.projects.map((project, i) => <ProjectCard project={project} index={i} />)}
+      </ul>
+    </section>
+  )}
 </Layout>
 
 <style>
-  ul {
+  .page-header {
+    margin-block-end: var(--space-m);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .page-desc {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    margin-block-start: var(--space-2xs);
+  }
+
+  .tag-section {
+    margin-block-end: var(--space-l);
+
+    &:last-child {
+      margin-block-end: 0;
+    }
+
+    h2 {
+      font-size: var(--step--1);
+      font-family: var(--font-mono);
+      font-weight: var(--font-weight-medium);
+      color: var(--muted-foreground);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-block-end: var(--space-2xs);
+    }
+  }
+
+  .post-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-m);
   }
 </style>

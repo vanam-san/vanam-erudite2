@@ -2,18 +2,18 @@
 import { formatShortDate } from "@/lib/utils"
 import type { CollectionEntry } from "astro:content"
 
-type Props = { gallery: CollectionEntry<"gallery"> }
+type Props = { gallery: CollectionEntry<"gallery">; index?: number }
 
-const { gallery } = Astro.props
+const { gallery, index = 0 } = Astro.props
 const { title, description, date, photos, tags } = gallery.data
 const photoCount = photos.length
 ---
 
-<li>
+<li class:list={["animate-in", `animate-in-delay-${Math.min(index + 1, 8)}`]}>
   <time datetime={date.toISOString()}>{formatShortDate(date)}</time>
   <a href={`/gallery/${gallery.id}`}>{title}</a>
   {tags && tags.length > 0 && (
-    <entry-tags>{tags.join(" · ")}</entry-tags>
+    <entry-tags>{tags.map(t => t.toLowerCase()).join(" · ")}</entry-tags>
   )}
   <entry-meta>{photoCount} photo{photoCount === 1 ? "" : "s"}</entry-meta>
   {description && <entry-desc>{description}</entry-desc>}
@@ -48,12 +48,15 @@ const photoCount = photos.length
     grid-column: 2;
     font-size: var(--step-0);
     font-weight: var(--font-weight-medium);
-    line-height: calc(var(--leading-offset) + 1em);
+    line-height: 1.2;
     color: inherit;
-    transition: color 0.15s ease;
+    transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
 
     &:hover {
       color: var(--primary);
+      text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
     }
   }
 

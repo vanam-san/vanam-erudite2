@@ -10,16 +10,16 @@ const galleriesByYear = getGalleriesByYear(galleries)
 
 <Layout>
   <MetaPage slot="head" title="Gallery" />
-  <div class="page-header">
+  <div class="page-header animate-in">
     <h1 class="page-title">Gallery</h1>
     <p class="page-desc">A collection of photography and visual work, organized by year.</p>
   </div>
   <div class="year-groups">
     {[...galleriesByYear.entries()].map(([year, yearGalleries]) => (
-      <section class="year-group">
+      <section class="year-group animate-in">
         <h2>{year}</h2>
         <ul class="gallery-list">
-          {yearGalleries.map((gallery) => <GalleryCard gallery={gallery} />)}
+          {yearGalleries.map((gallery, i) => <GalleryCard gallery={gallery} index={i} />)}
         </ul>
       </section>
     ))}
@@ -32,10 +32,11 @@ const galleriesByYear = getGalleriesByYear(galleries)
   }
 
   .page-title {
+    font-family: var(--font-display);
     font-size: var(--step-2);
-    font-weight: var(--font-weight-medium);
-    letter-spacing: var(--tracking-tighter);
-    line-height: calc(var(--leading-offset) + 1em);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
   }
 
   .page-desc {
