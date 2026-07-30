@@ -46,3 +46,12 @@ prose-content {
     box-shadow: inset 0 -1px 0 var(--border);
   }
 }
+
+/* Anthropic-style warm selection color */
+::selection {
+  background-color: rgba(204, 120, 92, 0.3);
+}
+
+::-moz-selection {
+  background-color: rgba(204, 120, 92, 0.3);
+}

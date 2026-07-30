@@ -21,7 +21,16 @@ import { SITE, SOCIALS } from "@/consts"
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-block: var(--space-xs) var(--page-offset-bottom);
+    margin-block: var(--space-xl) var(--page-offset-bottom);
+    padding-block: var(--space-m);
+    border-block-start: 1px solid transparent;
+    border-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--primary) 40%, transparent),
+      color-mix(in oklab, var(--secondary) 25%, transparent),
+      transparent
+    ) 1;
 
     @media (width >= 40rem) {
       flex-direction: row;
@@ -35,14 +44,12 @@ import { SITE, SOCIALS } from "@/consts"
 
     .footer-links a {
       color: var(--muted-foreground);
-      text-decoration: underline;
-      text-decoration-color: transparent;
-      transition: text-decoration-color 0.2s;
+      text-decoration: none;
+      transition: color 0.15s ease;
     }
 
     .footer-links a:hover {
-      color: var(--primary);
-      text-decoration-color: currentColor;
+      color: var(--foreground);
     }
   }
 </style>

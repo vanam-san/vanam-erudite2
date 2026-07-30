@@ -6,7 +6,8 @@ photos:
   - './photo-01.jpg'
   - './photo-02.jpg'
   - './photo-03.jpg'
-date: 2026-05-01
+date: 2025-05-01
+tags: ['landscape', 'nature', 'outdoors']
 ---
 
 Images obtained from [Pexels](https://www.pexels.com).

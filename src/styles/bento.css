@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-auto-rows: auto;
-  gap: calc(var(--space-m) / 2);
+  gap: var(--space-s);
   margin-block-end: var(--space-xl);
 }
 
@@ -10,21 +10,29 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: var(--radius-2xl);
-  border: 1.5px solid var(--border);
-  background-color: color-mix(in oklab, var(--muted) 20%, transparent);
-  padding: var(--space-s);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  background-color: color-mix(in oklab, var(--muted) 25%, transparent);
+  padding: var(--space-m);
   transition:
-    border-color 0.3s,
-    background-color 0.3s,
-    box-shadow 0.3s,
-    transform 0.3s;
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.bento-card:nth-child(1) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.00s backwards; }
+.bento-card:nth-child(2) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.06s backwards; }
+.bento-card:nth-child(3) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.12s backwards; }
+.bento-card:nth-child(4) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards; }
+.bento-card:nth-child(5) { animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.24s backwards; }
+
 a.bento-card:hover {
-  border-color: var(--primary);
-  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
-  box-shadow: 0 4px 24px color-mix(in oklab, var(--primary) 8%, transparent);
+  border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
+  background-color: color-mix(in oklab, var(--muted) 55%, transparent);
+  box-shadow:
+    var(--glow-purple),
+    0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent);
   transform: translateY(-2px);
 }
 
@@ -41,7 +49,7 @@ a.bento-card:hover {
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   margin-block-end: var(--space-xs);
 }
 
@@ -63,28 +71,39 @@ a.bento-card:hover {
 
 .bento-link {
   font-size: var(--step--1);
-  color: var(--muted-foreground);
+  color: var(--secondary);
   margin-block-start: auto;
+  transition: color 0.2s ease;
+}
+
+a:hover > .bento-link {
+  color: color-mix(in oklab, var(--primary) 80%, var(--foreground));
 }
 
 /* Hero Card */
 .bento-hero {
   align-items: flex-start;
   text-align: left;
-  gap: var(--space-3xs);
+  gap: var(--space-2xs);
 }
 
 .bento-hero-name {
+  font-family: var(--font-display);
   font-size: var(--step-2);
-  font-weight: var(--font-weight-medium);
-  line-height: calc(var(--leading-offset) + 1em);
+  font-weight: 700;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   margin: 0;
 }
 
 .bento-hero-subtitle {
   font-size: var(--step--1);
-  color: var(--primary);
+  color: var(--secondary);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
   margin: 0;
+  text-shadow: 0 0 12px color-mix(in oklab, var(--secondary) 30%, transparent);
 }
 
 .bento-hero-bio {
@@ -92,23 +111,23 @@ a.bento-card:hover {
   color: var(--muted-foreground);
   max-inline-size: 40rem;
   margin: 0;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 /* Posts Card */
 .bento-posts {
   gap: 0;
   transition:
-    border-color 0.3s,
-    background-color 0.3s,
-    box-shadow 0.3s,
-    transform 0.3s;
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
-    border-color: var(--primary);
-    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
-    box-shadow: 0 4px 24px color-mix(in oklab, var(--primary) 8%, transparent);
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+    background-color: color-mix(in oklab, var(--muted) 60%, transparent);
+    box-shadow: var(--glow-subtle), 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
+    transform: translateY(-1px);
   }
 }
 
@@ -122,7 +141,30 @@ a.bento-card:hover {
 
 .bento-post {
   padding-block: var(--space-2xs);
+  padding-inline-start: var(--space-xs);
   border-bottom: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: var(--space-2xs);
+    bottom: var(--space-2xs);
+    width: 2px;
+    background: var(--secondary);
+    border-radius: 1px;
+    opacity: 0;
+    transform: scaleY(0);
+    transition:
+      opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 
   &:last-child {
     border-bottom: none;
@@ -196,16 +238,16 @@ a.bento-card:hover {
 .bento-projects {
   gap: 0;
   transition:
-    border-color 0.3s,
-    background-color 0.3s,
-    box-shadow 0.3s,
-    transform 0.3s;
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
-    border-color: var(--primary);
-    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
-    box-shadow: 0 4px 24px color-mix(in oklab, var(--primary) 8%, transparent);
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+    background-color: color-mix(in oklab, var(--muted) 60%, transparent);
+    box-shadow: var(--glow-subtle), 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
+    transform: translateY(-1px);
   }
 }
 
@@ -222,7 +264,30 @@ a.bento-card:hover {
   align-items: center;
   gap: var(--space-s);
   padding-block: var(--space-2xs);
+  padding-inline-start: var(--space-xs);
   border-bottom: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+  position: relative;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: var(--space-2xs);
+    bottom: var(--space-2xs);
+    width: 2px;
+    background: var(--secondary);
+    border-radius: 1px;
+    opacity: 0;
+    transform: scaleY(0);
+    transition:
+      opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover::before {
+    opacity: 1;
+    transform: scaleY(1);
+  }
 
   &:last-child {
     border-bottom: none;
@@ -277,13 +342,14 @@ a.bento-card:hover {
   font-weight: var(--font-weight-medium);
   color: var(--muted-foreground);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .bento-time-value {
   font-size: var(--step-1);
   font-weight: var(--font-weight-medium);
   font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
 }
 
 .bento-time-date {

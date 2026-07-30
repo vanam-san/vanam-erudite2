@@ -25,6 +25,19 @@ export async function getGalleries(): Promise<CollectionEntry<"gallery">[]> {
   return galleries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 }
 
+export function getGalleriesByYear(
+  galleries: CollectionEntry<"gallery">[],
+): Map<number, CollectionEntry<"gallery">[]> {
+  const grouped = new Map<number, CollectionEntry<"gallery">[]>()
+  for (const gallery of galleries) {
+    const year = gallery.data.date.getFullYear()
+    const group = grouped.get(year)
+    if (group) group.push(gallery)
+    else grouped.set(year, [gallery])
+  }
+  return new Map([...grouped].sort(([a], [b]) => b - a))
+}
+
 export async function getRecentGalleries(
   count: number,
 ): Promise<CollectionEntry<"gallery">[]> {
@@ -56,26 +69,73 @@ export async function getSubposts(): Promise<
   return Map.groupBy(posts, (post) => post.id.split("/")[0])
 }
 
-export async function getTags(): Promise<
-  Map<string, CollectionEntry<"blog">[]>
-> {
+export async function getProjects(): Promise<CollectionEntry<"projects">[]> {
+  return getCollection("projects", ({ data }) => !data.draft)
+}
+
+type TaggableEntry =
+  | CollectionEntry<"blog">
+  | CollectionEntry<"gallery">
+  | CollectionEntry<"projects">
+
+export type TagGroup = {
+  blog: CollectionEntry<"blog">[]
+  gallery: CollectionEntry<"gallery">[]
+  projects: CollectionEntry<"projects">[]
+}
+
+export async function getAllTags(): Promise<Map<string, TagGroup>> {
   const posts = await getPosts()
   const series = await getSubposts()
-  const tags = new Map<string, CollectionEntry<"blog">[]>()
+  const galleries = await getGalleries()
+  const projects = await getProjects()
+
+  const tags = new Map<string, TagGroup>()
+
+  function ensureTag(tag: string) {
+    const key = tag.toLowerCase()
+    if (!tags.has(key)) {
+      tags.set(key, { blog: [], gallery: [], projects: [] })
+    }
+    return tags.get(key)!
+  }
+
   for (const post of posts) {
     const chain = [post, ...(series.get(post.id) ?? [])]
     for (const tag of new Set(
       chain.flatMap((entry) => entry.data.tags ?? []),
     )) {
-      const tagged = tags.get(tag)
-      if (tagged) tagged.push(post)
-      else tags.set(tag, [post])
+      ensureTag(tag).blog.push(post)
     }
   }
+
+  for (const gallery of galleries) {
+    for (const tag of gallery.data.tags ?? []) {
+      ensureTag(tag).gallery.push(gallery)
+    }
+  }
+
+  for (const project of projects) {
+    for (const tag of project.data.tags ?? []) {
+      ensureTag(tag).projects.push(project)
+    }
+  }
+
   return new Map(
-    [...tags].sort(
-      ([a, postsA], [b, postsB]) =>
-        postsB.length - postsA.length || a.localeCompare(b),
-    ),
+    [...tags].sort(([a, groupA], [b, groupB]) => {
+      const countA = groupA.blog.length + groupA.gallery.length + groupA.projects.length
+      const countB = groupB.blog.length + groupB.gallery.length + groupB.projects.length
+      return countB - countA || a.localeCompare(b)
+    }),
+  )
+}
+
+/** @deprecated Use getAllTags instead */
+export async function getTags(): Promise<
+  Map<string, CollectionEntry<"blog">[]>
+> {
+  const allTags = await getAllTags()
+  return new Map(
+    [...allTags].map(([tag, group]) => [tag, group.blog]),
   )
 }

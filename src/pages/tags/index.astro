@@ -1,44 +1,82 @@
 ---
 import MetaPage from "@/components/MetaPage.astro"
 import Layout from "@/layouts/Layout.astro"
-import { getTags } from "@/lib/content"
+import { getAllTags } from "@/lib/content"
 
-const tags = await getTags()
+const tags = await getAllTags()
 ---
 
 <Layout crumbs={[{ label: "Tags", href: "/tags" }]}>
   <MetaPage slot="head" title="Tags" noindex />
+  <div class="page-header animate-in">
+    <h1 class="page-title">Tags</h1>
+    <p class="page-desc">Browse all content by tag across blog, gallery, and projects.</p>
+  </div>
   <ul>
-    {[...tags].map(([tag, posts]) => (
-        <li>
-          <a href={`/tags/${tag}`}>#{tag}<tag-count>{posts.length}</tag-count></a>
+    {[...tags].map(([tag, group], i) => {
+      const count = group.blog.length + group.gallery.length + group.projects.length
+      return (
+        <li class:list={["animate-in", `animate-in-delay-${Math.min(i + 1, 8)}`]}>
+          <a href={`/tags/${tag}`}>
+            #{tag}
+            <tag-count>{count}</tag-count>
+          </a>
         </li>
-      ))}
+      )
+    })}
   </ul>
 </Layout>
 
 <style>
+  .page-header {
+    margin-block-end: var(--space-m);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .page-desc {
+    font-size: var(--step--1);
+    color: var(--muted-foreground);
+    margin-block-start: var(--space-2xs);
+  }
+
   ul {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2xs);
 
     a {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
       padding-inline: var(--space-2xs);
+      padding-block: var(--space-3xs);
       font-size: var(--step--1);
       color: var(--muted-foreground);
       background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+      border: 1px solid var(--border);
       border-radius: var(--radius-full);
       text-decoration-line: none;
+      transition:
+        color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
       &:hover {
         color: var(--primary);
+        border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
+        background-color: color-mix(in oklab, var(--primary) 8%, transparent);
       }
 
       tag-count {
         margin-inline-start: var(--space-3xs);
-        opacity: 0.6;
+        opacity: 0.5;
+        font-size: var(--step--2);
       }
     }
   }

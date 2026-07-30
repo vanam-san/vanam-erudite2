@@ -12,6 +12,7 @@ photos:
   - './photo-07.jpg'
   - './photo-08.jpg'
 date: 2026-06-02
+tags: ['urban', 'cityscape', 'street']
 ---
 
 Images obtained from [Pexels](https://www.pexels.com).
