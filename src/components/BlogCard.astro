@@ -18,6 +18,7 @@ const formattedWordCount =
     <entry-tags>{post.data.tags.join(" · ")}</entry-tags>
   )}
   <entry-meta>{formattedWordCount} words · {readingTime} min read</entry-meta>
+  {post.data.description && <entry-desc>{post.data.description}</entry-desc>}
 </li>
 
 <style>
@@ -97,6 +98,18 @@ const formattedWordCount =
     grid-column: 1 / -1;
     font-size: var(--step--1);
     color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  }
+
+  entry-desc {
+    grid-row: 4;
+    grid-column: 1 / -1;
+    font-size: var(--step--1);
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+    line-clamp: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   @media (width < 40rem) {
