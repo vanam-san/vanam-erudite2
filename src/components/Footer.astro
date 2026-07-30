@@ -23,7 +23,14 @@ import { SITE, SOCIALS } from "@/consts"
     align-items: center;
     margin-block: var(--space-xl) var(--page-offset-bottom);
     padding-block: var(--space-m);
-    border-block-start: 1px solid var(--border);
+    border-block-start: 1px solid transparent;
+    border-image: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--primary) 40%, transparent),
+      color-mix(in oklab, var(--secondary) 25%, transparent),
+      transparent
+    ) 1;
 
     @media (width >= 40rem) {
       flex-direction: row;

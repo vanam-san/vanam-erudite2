@@ -31,8 +31,8 @@ a.bento-card:hover {
   border-color: color-mix(in oklab, var(--primary) 50%, var(--border));
   background-color: color-mix(in oklab, var(--muted) 55%, transparent);
   box-shadow:
-    0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent),
-    0 4px 20px color-mix(in oklab, var(--primary) 8%, transparent);
+    var(--glow-blue),
+    0 1px 2px color-mix(in oklab, var(--foreground) 4%, transparent);
   transform: translateY(-2px);
 }
 
@@ -71,7 +71,7 @@ a.bento-card:hover {
 
 .bento-link {
   font-size: var(--step--1);
-  color: var(--primary);
+  color: var(--secondary);
   margin-block-start: auto;
   transition: color 0.2s ease;
 }
@@ -99,10 +99,11 @@ a:hover > .bento-link {
 
 .bento-hero-subtitle {
   font-size: var(--step--1);
-  color: var(--primary);
+  color: var(--secondary);
   font-weight: var(--font-weight-medium);
   letter-spacing: 0.02em;
   margin: 0;
+  text-shadow: 0 0 12px color-mix(in oklab, var(--secondary) 30%, transparent);
 }
 
 .bento-hero-bio {
@@ -125,7 +126,7 @@ a:hover > .bento-link {
   &:hover {
     border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
     background-color: color-mix(in oklab, var(--muted) 60%, transparent);
-    box-shadow: 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
+    box-shadow: var(--glow-subtle), 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
     transform: translateY(-1px);
   }
 }
@@ -222,7 +223,7 @@ a:hover > .bento-link {
   &:hover {
     border-color: color-mix(in oklab, var(--primary) 40%, var(--border));
     background-color: color-mix(in oklab, var(--muted) 60%, transparent);
-    box-shadow: 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
+    box-shadow: var(--glow-subtle), 0 2px 16px color-mix(in oklab, var(--primary) 6%, transparent);
     transform: translateY(-1px);
   }
 }

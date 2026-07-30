@@ -157,11 +157,20 @@ const section = NAVIGATION.find(
       display: block;
       color: var(--muted-foreground);
       font-size: var(--step--1);
-      transition: color 0.15s ease;
+      padding-inline-start: var(--space-xs);
+      border-inline-start: 2px solid transparent;
+      transition:
+        color 0.15s ease,
+        border-color 0.15s ease;
 
-      &:hover,
-      &[aria-current="page"] {
+      &:hover {
         color: var(--foreground);
+      }
+
+      &[aria-current="page"] {
+        color: var(--secondary);
+        border-inline-start-color: var(--secondary);
+        text-shadow: 0 0 12px color-mix(in oklab, var(--secondary) 25%, transparent);
       }
     }
 
