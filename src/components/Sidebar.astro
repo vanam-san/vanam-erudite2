@@ -113,7 +113,7 @@ const section = NAVIGATION.find(
   sidebar-inner {
     display: flex;
     flex-direction: column;
-    gap: var(--space-2xs);
+    gap: var(--space-xs);
 
     > a {
       display: inline-flex;
@@ -124,6 +124,7 @@ const section = NAVIGATION.find(
       font-size: var(--step-0);
       color: var(--foreground);
       text-decoration-line: none;
+      letter-spacing: var(--tracking-tight);
 
       svg {
         inline-size: 1.5rem;
@@ -149,15 +150,17 @@ const section = NAVIGATION.find(
   nav ul {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3xs);
+    gap: var(--space-2xs);
 
     a {
       display: block;
       color: var(--muted-foreground);
+      font-size: var(--step--1);
+      transition: color 0.15s ease;
 
       &:hover,
       &[aria-current="page"] {
-        color: var(--primary);
+        color: var(--foreground);
       }
     }
 
@@ -166,7 +169,7 @@ const section = NAVIGATION.find(
     }
 
     ul {
-      margin-block-start: var(--space-3xs);
+      margin-block-start: var(--space-2xs);
 
       a {
         margin-inline-start: var(--space-xs);
@@ -243,12 +246,12 @@ const section = NAVIGATION.find(
     position: absolute;
     top: calc(100% + var(--space-xs));
     right: 0;
-    min-width: 150px;
+    min-width: 180px;
     background-color: var(--background);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: var(--space-xs);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px color-mix(in oklab, var(--foreground) 8%, transparent);
     z-index: 100;
 
     &.open {
@@ -270,13 +273,14 @@ const section = NAVIGATION.find(
       color: var(--muted-foreground);
       text-decoration: none;
       border-radius: var(--radius-md);
+      font-size: var(--step--1);
       transition:
-        background-color 0.2s,
-        color 0.2s;
+        background-color 0.15s ease,
+        color 0.15s ease;
 
       &:hover,
       &[aria-current="page"] {
-        color: var(--primary);
+        color: var(--foreground);
         background-color: var(--muted);
       }
     }

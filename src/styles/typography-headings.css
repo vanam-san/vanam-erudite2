@@ -2,6 +2,7 @@ prose-content {
   :is(h1, h2, h3, h4, h5, h6) {
     margin-block: 1.5em 0.5em;
     font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-tighter);
     line-height: calc(var(--leading-offset) + 1em);
     color: var(--foreground);
     text-wrap: balance;
