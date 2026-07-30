@@ -1,55 +1,55 @@
 :root {
-  /* ═══ Midnight Galaxy Theme ═══ */
-  /* Dramatic cosmic purple palette */
+  /* ═══ Forest Canopy Theme ═══ */
+  /* Rich woodland green palette */
 
-  --gray-1:  light-dark(#f5f3f8, #0e0a14);
-  --gray-2:  light-dark(#ede9f3, #140f1c);
-  --gray-3:  light-dark(#e2dcea, #1c1526);
-  --gray-4:  light-dark(#d5cfe0, #251d30);
-  --gray-5:  light-dark(#c5bdd3, #30283d);
-  --gray-6:  light-dark(#b5adc5, #3d344c);
-  --gray-7:  light-dark(#9d94af, #4d4560);
-  --gray-8:  light-dark(#857c98, #5e5672);
-  --gray-9:  light-dark(#6e6580, #706888);
-  --gray-10: light-dark(#5a5168, #887fa0);
-  --gray-11: light-dark(#463d52, #a49bb8);
-  --gray-12: light-dark(#1a1422, #e6e0f0);
+  --gray-1:  light-dark(#f4f7f4, #0a120a);
+  --gray-2:  light-dark(#e8ede8, #101c10);
+  --gray-3:  light-dark(#dde5dd, #182618);
+  --gray-4:  light-dark(#d0dbd0, #203020);
+  --gray-5:  light-dark(#c0ceC0, #2a3c2a);
+  --gray-6:  light-dark(#a8bca8, #364a36);
+  --gray-7:  light-dark(#8fa88f, #445a44);
+  --gray-8:  light-dark(#789078, #546c54);
+  --gray-9:  light-dark(#627862, #647c64);
+  --gray-10: light-dark(#506550, #788e78);
+  --gray-11: light-dark(#3e523e, #92a892);
+  --gray-12: light-dark(#1a2e1a, #d8ecd8);
 
-  /* Lavender — primary accent */
-  --lavender-3:  light-dark(#e8e0f5, #1a1230);
-  --lavender-5:  light-dark(#d0c4e8, #2d2050);
-  --lavender-7:  light-dark(#b8a8d8, #4a3a70);
-  --lavender-9:  light-dark(#a490c2, #6b5a90);
-  --lavender-11: light-dark(#8a74a8, #a490c2);
+  /* Fern — primary accent */
+  --fern-3:  light-dark(#ddf0dd, #0a200a);
+  --fern-5:  light-dark(#b8d8b8, #1a3a1a);
+  --fern-7:  light-dark(#88b888, #2a5a2a);
+  --fern-9:  light-dark(#5a985a, #3a7a3a);
+  --fern-11: light-dark(#4a884a, #6ab06a);
 
-  /* Cosmic Blue — highlight accent */
-  --cosmic-3:  light-dark(#d8daf0, #1a1e40);
-  --cosmic-5:  light-dark(#b0b4d8, #2a2e60);
-  --cosmic-7:  light-dark(#8890c0, #3a3e80);
-  --cosmic-9:  light-dark(#4a4e8f, #5a5eaf);
-  --cosmic-11: light-dark(#3a3e70, #787cc8);
+  /* Moss — secondary accent */
+  --moss-3:  light-dark(#d8ead8, #142014);
+  --moss-5:  light-dark(#b0d0b0, #243824);
+  --moss-7:  light-dark(#88b888, #345034);
+  --moss-9:  light-dark(#609860, #447044);
+  --moss-11: light-dark(#4a804a, #689868);
 
-  --red-9:  light-dark(#d44060, #e85070);
-  --red-11: light-dark(#c03050, #ff6080);
+  --red-9:  light-dark(#c44a4a, #e05858);
+  --red-11: light-dark(#b03a3a, #f06868);
 
-  --green-9:  light-dark(#3a8a50, #50c868);
-  --green-11: light-dark(#2a7a40, #40e860);
+  --green-9:  light-dark(#4a8a4a, #60c860);
+  --green-11: light-dark(#3a7a3a, #50e850);
 
   --background:         var(--gray-1);
   --foreground:         var(--gray-12);
-  --primary:            var(--lavender-9);
+  --primary:            var(--fern-9);
   --primary-foreground: #ffffff;
-  --secondary:          var(--cosmic-9);
+  --secondary:          var(--moss-9);
   --muted:              var(--gray-3);
   --muted-foreground:   var(--gray-11);
   --destructive:        var(--red-11);
   --border:             var(--gray-5);
-  --ring:               var(--lavender-7);
+  --ring:               var(--fern-7);
 
   /* Glow effects */
-  --glow-purple: 0 0 20px color-mix(in oklab, var(--lavender-9) 25%, transparent);
-  --glow-cosmic: 0 0 20px color-mix(in oklab, var(--cosmic-9) 20%, transparent);
-  --glow-subtle: 0 0 12px color-mix(in oklab, var(--lavender-7) 15%, transparent);
+  --glow-forest: 0 0 20px color-mix(in oklab, var(--fern-9) 25%, transparent);
+  --glow-moss: 0 0 20px color-mix(in oklab, var(--moss-9) 20%, transparent);
+  --glow-subtle: 0 0 12px color-mix(in oklab, var(--fern-7) 15%, transparent);
 
   /* Grain */
   --grain-opacity: 0.02;
