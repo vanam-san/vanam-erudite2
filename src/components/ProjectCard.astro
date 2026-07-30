@@ -26,7 +26,30 @@ const { name, description, link, tags, startDate, endDate } = project.data
     row-gap: var(--space-3xs);
     column-gap: var(--space-s);
     padding-block: var(--space-2xs);
+    padding-inline-start: var(--space-xs);
     border-bottom: 1px solid color-mix(in oklab, var(--border) 55%, transparent);
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: var(--space-2xs);
+      bottom: var(--space-2xs);
+      width: 2px;
+      background: var(--primary);
+      border-radius: 1px;
+      opacity: 0;
+      transform: scaleY(0);
+      transition:
+        opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &:hover::before {
+      opacity: 1;
+      transform: scaleY(1);
+    }
 
     &:last-child {
       border-bottom: none;
