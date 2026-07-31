@@ -1,0 +1,164 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard class="bento-clock">
+  <div class="bento-label">Digital Clock</div>
+  <div class="clock-content">
+    <div class="clock-screen">
+      <div class="clock-time" id="crt-clock-time">--:--:--</div>
+      <div class="clock-date" id="crt-clock-date">---- -- ---</div>
+      <div class="clock-status" id="crt-clock-fps">PHOSPHOR ONLINE</div>
+    </div>
+    <div class="clock-footer">
+      <span class="clock-meta">LOCAL TIME</span>
+      <span class="clock-cursor"></span>
+    </div>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-clock {
+    gap: var(--space-xs);
+  }
+
+  .clock-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex: 1;
+  }
+
+  .clock-screen {
+    flex: 1;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    background-image: radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in oklab, var(--primary) 8%, transparent),
+      transparent 70%
+    );
+  }
+
+  .clock-time {
+    font-size: clamp(1.75rem, 1.4rem + 1.75vw, 3rem);
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    color: var(--foreground);
+    text-shadow: 0 0 12px color-mix(in oklab, var(--primary) 40%, transparent);
+  }
+
+  .clock-time .colon {
+    color: var(--primary);
+    animation: clock-blink 1s steps(1) infinite;
+  }
+
+  .clock-date {
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    color: var(--muted-foreground);
+  }
+
+  .clock-status {
+    font-size: var(--step--2);
+    letter-spacing: 0.1em;
+    font-family: var(--font-mono);
+    color: var(--secondary);
+  }
+
+  .clock-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+
+  .clock-meta {
+    font-size: var(--step--2);
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .clock-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    background: var(--primary);
+    animation: clock-blink 1s steps(1) infinite;
+    box-shadow: var(--glow-subtle);
+  }
+
+  @keyframes clock-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  function initClock() {
+    const timeEl = document.getElementById("crt-clock-time")
+    const dateEl = document.getElementById("crt-clock-date")
+    const statusEl = document.getElementById("crt-clock-fps")
+
+    if (!timeEl || !dateEl || !statusEl) return
+    const clock = timeEl
+    const date = dateEl
+    const status = statusEl
+
+    const statusMessages = [
+      "PHOSPHOR ONLINE",
+      "SYNC LOCKED",
+      "TICK... TOCK...",
+      "AUTO SET",
+      "UNIX +NT",
+      "CRT WARMING",
+    ]
+    let statusIdx = 0
+
+    function tick() {
+      const now = new Date()
+      const hours = now.getHours().toString().padStart(2, "0")
+      const minutes = now.getMinutes().toString().padStart(2, "0")
+      const seconds = now.getSeconds().toString().padStart(2, "0")
+
+      clock.innerHTML = `${hours}<span class="colon">:</span>${minutes}<span class="colon">:</span>${seconds}`
+
+      date.textContent = now.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+
+      if (now.getSeconds() % 8 === 0) {
+        status.textContent = statusMessages[statusIdx % statusMessages.length]
+        statusIdx++
+      }
+    }
+
+    tick()
+    setInterval(tick, 1000)
+  }
+
+  document.addEventListener("astro:page-load", initClock)
+  document.addEventListener("astro:after-swap", initClock)
+  initClock()
+</script>

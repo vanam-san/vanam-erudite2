@@ -1,0 +1,217 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard class="bento-matrix">
+  <div class="bento-label">Matrix Rain</div>
+  <div class="matrix-content">
+    <div class="matrix-screen">
+      <canvas id="matrix-canvas"></canvas>
+    </div>
+    <div class="matrix-footer">
+      <span class="matrix-meta" id="matrix-meta">WAKE UP, NEO...</span>
+      <span class="matrix-cursor"></span>
+    </div>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-matrix {
+    gap: var(--space-xs);
+  }
+
+  .matrix-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex: 1;
+  }
+
+  .matrix-screen {
+    flex: 1;
+    min-height: 150px;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+  }
+
+  .matrix-screen canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .matrix-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+
+  .matrix-meta {
+    font-size: var(--step--2);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+  }
+
+  .matrix-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    background: var(--secondary);
+    animation: matrix-blink 1s steps(1) infinite;
+    box-shadow: var(--glow-secondary);
+  }
+
+  @keyframes matrix-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  const GLYPHS =
+    "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789ABCDEF"
+
+  function cssColor(variable: string): string {
+    const probe = document.createElement("span")
+    probe.style.color = `var(${variable})`
+    probe.style.display = "none"
+    document.body.appendChild(probe)
+    const resolved = getComputedStyle(probe).color
+    probe.remove()
+    return resolved
+  }
+
+  function initMatrix() {
+    const canvasEl = document.getElementById(
+      "matrix-canvas",
+    ) as HTMLCanvasElement | null
+    const metaEl = document.getElementById("matrix-meta")
+
+    if (!canvasEl) return
+    const canvas = canvasEl
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+    const paint = ctx
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+
+    const trailColor = cssColor("--lume-9")
+    const headColor = cssColor("--lume-11")
+
+    let fontSize = 14
+    let columns = 0
+    let drops: number[] = []
+    let rafId = 0
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      canvas.width = Math.max(1, Math.floor(w * dpr))
+      canvas.height = Math.max(1, Math.floor(h * dpr))
+      paint.setTransform(dpr, 0, 0, dpr, 0, 0)
+      paint.fillStyle = "transparent"
+      paint.clearRect(0, 0, w, h)
+      columns = Math.ceil(w / fontSize)
+      drops = Array.from({ length: columns }, () => Math.random() * -50)
+    }
+
+    const messages = [
+      "WAKE UP, NEO...",
+      "FOLLOW THE WHITE RABBIT",
+      "THERE IS NO SPOON",
+      "THE MATRIX HAS YOU",
+      "FREE YOUR MIND",
+      "KNOCK, KNOCK",
+      "RED PILL OR BLUE?",
+    ]
+    let msgIdx = 0
+
+    function draw() {
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+
+      paint.fillStyle = "rgba(0, 0, 0, 0.08)"
+      paint.fillRect(0, 0, w, h)
+
+      paint.font = `${fontSize}px "IBM Plex Mono", monospace`
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+        const x = i * fontSize
+        const y = drops[i] * fontSize
+
+        paint.fillStyle = headColor
+        paint.shadowColor = trailColor
+        paint.shadowBlur = 8
+        paint.fillText(char, x, y)
+
+        paint.fillStyle = trailColor
+        paint.shadowBlur = 0
+        paint.fillText(char, x, y - fontSize)
+
+        if (y > h && Math.random() > 0.975) {
+          drops[i] = 0
+        }
+        drops[i]++
+      }
+
+      rafId = requestAnimationFrame(draw)
+    }
+
+    function start() {
+      cancelAnimationFrame(rafId)
+      if (reduced) {
+        resize()
+        return
+      }
+      resize()
+      rafId = requestAnimationFrame(draw)
+    }
+
+    resize()
+
+    window.setInterval(() => {
+      if (metaEl) {
+        metaEl.textContent = messages[msgIdx % messages.length]
+        msgIdx++
+      }
+    }, 6000)
+
+    let resizeTimer = 0
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(start, 150)
+    })
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId)
+      } else {
+        start()
+      }
+    })
+
+    start()
+  }
+
+  document.addEventListener("astro:page-load", initMatrix)
+  document.addEventListener("astro:after-swap", initMatrix)
+  initMatrix()
+</script>

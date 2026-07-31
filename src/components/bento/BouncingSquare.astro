@@ -1,0 +1,125 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard span={2} class="bento-bounce">
+  <div class="bento-label">Atomic Bounce</div>
+  <div class="bounce-viewport" id="bounce-viewport">
+    <div class="bounce-square" id="bounce-square"></div>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-bounce {
+    gap: var(--space-xs);
+    padding: var(--space-m);
+    overflow: hidden;
+  }
+
+  .bounce-viewport {
+    flex: 1;
+    min-height: 160px;
+    position: relative;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    overflow: hidden;
+  }
+
+  .bounce-square {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: var(--radius-sm);
+    background: var(--primary);
+    box-shadow:
+      0 0 12px var(--primary),
+      0 0 24px color-mix(in oklab, var(--primary) 40%, transparent);
+    will-change: transform;
+  }
+
+  @media (width < 40rem) {
+    .bounce-viewport {
+      min-height: 120px;
+    }
+  }
+</style>
+
+<script>
+  function initBounce() {
+    const viewport = document.getElementById("bounce-viewport")
+    const square = document.getElementById("bounce-square")
+
+    if (!viewport || !square) return
+    const screen = viewport
+    const ball = square
+
+    let x = 50
+    let y = 50
+    let vx = 2.5
+    let vy = 1.8
+    const size = 16
+    let animFrame = 0
+
+    const COLORS = [
+      "var(--primary)",
+      "var(--secondary)",
+      "var(--cyan-7)",
+      "var(--lume-7)",
+      "var(--cyan-11)",
+      "var(--lume-11)",
+    ]
+    let colorIdx = 0
+
+    function tick() {
+      const w = screen.clientWidth
+      const h = screen.clientHeight
+
+      x += vx
+      y += vy
+
+      let bounced = false
+
+      if (x <= 0) {
+        x = 0
+        vx = Math.abs(vx)
+        bounced = true
+      } else if (x + size >= w) {
+        x = w - size
+        vx = -Math.abs(vx)
+        bounced = true
+      }
+
+      if (y <= 0) {
+        y = 0
+        vy = Math.abs(vy)
+        bounced = true
+      } else if (y + size >= h) {
+        y = h - size
+        vy = -Math.abs(vy)
+        bounced = true
+      }
+
+      if (bounced) {
+        colorIdx = (colorIdx + 1) % COLORS.length
+        ball.style.background = COLORS[colorIdx]
+        ball.style.boxShadow = `0 0 12px ${COLORS[colorIdx]}, 0 0 24px color-mix(in oklab, ${COLORS[colorIdx]} 40%, transparent)`
+      }
+
+      ball.style.transform = `translate(${x}px, ${y}px)`
+      animFrame = requestAnimationFrame(tick)
+    }
+
+    cancelAnimationFrame(animFrame)
+    animFrame = requestAnimationFrame(tick)
+
+    document.addEventListener("astro:page-load", () => {
+      cancelAnimationFrame(animFrame)
+      animFrame = requestAnimationFrame(tick)
+    })
+  }
+
+  document.addEventListener("astro:page-load", initBounce)
+  document.addEventListener("astro:after-swap", initBounce)
+  initBounce()
+</script>

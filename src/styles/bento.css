@@ -391,6 +391,23 @@ a:hover > .bento-link {
     grid-column: span 1;
   }
 
+  .bento-card[data-row-span="2"] {
+    grid-row: span 1;
+  }
+
+  /* Playground keeps a 2-column grid on mobile so large cards stay 2x2 */
+  .bento-grid-playground {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .bento-grid-playground .bento-card[data-span="2"] {
+    grid-column: span 2;
+  }
+
+  .bento-grid-playground .bento-card[data-row-span="2"] {
+    grid-row: span 2;
+  }
+
   .bento-time {
     flex-direction: column;
     gap: calc(var(--space-m) / 2);

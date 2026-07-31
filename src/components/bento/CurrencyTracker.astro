@@ -1,0 +1,256 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard span={2} class="bento-currency">
+  <div class="bento-label">Live Currency Rates</div>
+  <div class="currency-content">
+    <div class="currency-grid" id="currency-grid">
+      <div class="currency-skeleton">
+        <div class="currency-skel-item"></div>
+        <div class="currency-skel-item"></div>
+        <div class="currency-skel-item"></div>
+        <div class="currency-skel-item"></div>
+      </div>
+    </div>
+    <div class="currency-footer">
+      <span class="currency-meta" id="currency-updated">Loading...</span>
+      <button
+        class="currency-refresh"
+        id="currency-refresh"
+        aria-label="Refresh"
+      >
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-currency {
+    gap: var(--space-xs);
+  }
+
+  .currency-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex: 1;
+  }
+
+  .currency-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-s);
+  }
+
+  .currency-skeleton {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-s);
+    grid-column: 1 / -1;
+  }
+
+  .currency-skel-item {
+    height: 3.5rem;
+    background: linear-gradient(
+      90deg,
+      var(--muted) 25%,
+      color-mix(in oklab, var(--muted) 60%, transparent) 50%,
+      var(--muted) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .currency-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+  }
+
+  .currency-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .currency-flag {
+    font-size: var(--step-0);
+  }
+
+  .currency-code {
+    font-size: var(--step--2);
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-medium);
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+  }
+
+  .currency-value {
+    font-size: var(--step-1);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: var(--tracking-tighter);
+  }
+
+  .currency-change {
+    font-size: var(--step--2);
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .currency-change.up {
+    color: var(--green-9);
+  }
+
+  .currency-change.down {
+    color: var(--red-9);
+  }
+
+  .currency-change.neutral {
+    color: var(--muted-foreground);
+  }
+
+  .currency-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .currency-meta {
+    font-size: var(--step--2);
+    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
+  }
+
+  .currency-refresh {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .currency-refresh:hover {
+    color: var(--primary);
+    border-color: var(--primary);
+    transform: rotate(90deg);
+  }
+
+  @media (width < 40rem) {
+    .currency-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>
+
+<script>
+  const CURRENCIES = [
+    { code: "EUR", flag: "\u{1F1EA}\u{1F1FA}", label: "Euro" },
+    { code: "GBP", flag: "\u{1F1EC}\u{1F1E7}", label: "Pound" },
+    { code: "INR", flag: "\u{1F1EE}\u{1F1F3}", label: "Rupee" },
+    { code: "JPY", flag: "\u{1F1EF}\u{1F1F5}", label: "Yen" },
+  ]
+
+  let prevRates: Record<string, number> = {}
+
+  function initCurrency() {
+    const gridEl = document.getElementById("currency-grid")
+    const updatedEl = document.getElementById("currency-updated")
+    const refreshBtn = document.getElementById("currency-refresh")
+
+    if (!gridEl || !updatedEl) return
+    const grid = gridEl
+    const updated = updatedEl
+
+    async function fetchRates() {
+      try {
+        const res = await fetch("https://open.er-api.com/v6/latest/USD")
+        const data = await res.json()
+
+        if (data.rates) {
+          grid.innerHTML = CURRENCIES.map((cur) => {
+            const rate = data.rates[cur.code]
+            if (!rate) return ""
+
+            const prev = prevRates[cur.code]
+            let changeClass = "neutral"
+            let arrow = ""
+            if (prev) {
+              if (rate > prev) {
+                changeClass = "up"
+                arrow = "\u25B2"
+              } else if (rate < prev) {
+                changeClass = "down"
+                arrow = "\u25BC"
+              }
+            }
+            prevRates[cur.code] = rate
+
+            return `<div class="currency-item">
+  <div class="currency-header">
+    <span class="currency-flag">${cur.flag}</span>
+    <span class="currency-code">${cur.code}</span>
+  </div>
+  <div class="currency-value">${rate.toFixed(2)}</div>
+  <div class="currency-change ${changeClass}">${arrow} 1 USD = ${rate.toFixed(2)} ${cur.code}</div>
+</div>`
+          })
+            .filter(Boolean)
+            .join("")
+
+          updated.textContent = `Updated ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`
+        }
+      } catch {
+        grid.innerHTML =
+          '<div class="currency-skeleton"><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div></div>'
+      }
+    }
+
+    fetchRates()
+    setInterval(fetchRates, 60000)
+
+    refreshBtn?.addEventListener("click", () => {
+      grid.innerHTML =
+        '<div class="currency-skeleton"><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div></div>'
+      updated.textContent = "Loading..."
+      prevRates = {}
+      fetchRates()
+    })
+  }
+
+  document.addEventListener("astro:page-load", initCurrency)
+  document.addEventListener("astro:after-swap", initCurrency)
+  initCurrency()
+</script>
