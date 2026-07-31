@@ -1,0 +1,182 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard span={2} class="bento-wave">
+  <div class="wave-header">
+    <span class="bento-label">Wave Forms</span>
+    <span class="wave-mode" id="wave-mode">Sine</span>
+  </div>
+  <div class="wave-viewport" id="wave-viewport">
+    <canvas id="wave-canvas"></canvas>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-wave {
+    gap: var(--space-xs);
+  }
+
+  .wave-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .wave-mode {
+    font-family: var(--font-mono);
+    font-size: var(--step--3);
+    color: var(--secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .wave-viewport {
+    flex: 1;
+    min-height: 140px;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .wave-viewport canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  type WaveFn = (x: number, t: number, amp: number) => number
+
+  const WAVEFORMS: {
+    name: string
+    fn: WaveFn
+    colors: string[]
+  }[] = [
+    {
+      name: "Sine",
+      fn: (x, t, amp) => Math.sin(x + t) * amp,
+      colors: ["var(--primary)", "var(--secondary)", "var(--cyan-7)"],
+    },
+    {
+      name: "Square",
+      fn: (x, t, amp) => (Math.sin(x + t) >= 0 ? amp : -amp),
+      colors: ["var(--lume-9)", "var(--lume-7)", "var(--lume-11)"],
+    },
+    {
+      name: "Sawtooth",
+      fn: (x, t, amp) => (((x + t) % (Math.PI * 2)) / Math.PI) * amp - amp,
+      colors: ["var(--red-9)", "var(--red-11)", "var(--primary)"],
+    },
+    {
+      name: "Triangle",
+      fn: (x, t, amp) =>
+        (Math.abs(((x + t) % (Math.PI * 2)) / Math.PI - 1) * 2 - 1) * amp,
+      colors: ["var(--cyan-9)", "var(--cyan-11)", "var(--lume-9)"],
+    },
+    {
+      name: "Pulse",
+      fn: (x, t, amp) => {
+        const v = (x + t) % (Math.PI * 2)
+        return v < 0.5 ? amp * Math.sin(v * Math.PI * 2) : 0
+      },
+      colors: ["var(--secondary)", "var(--primary)", "var(--lume-7)"],
+    },
+    {
+      name: "Interference",
+      fn: (x, t, amp) =>
+        Math.sin(x * 1.5 + t) * amp * 0.6 +
+        Math.sin(x * 0.7 + t * 1.3) * amp * 0.4,
+      colors: ["var(--primary)", "var(--lume-9)", "var(--cyan-7)"],
+    },
+  ]
+
+  function initWave() {
+    const viewport = document.getElementById("wave-viewport")
+    const canvas = document.getElementById("wave-canvas") as HTMLCanvasElement
+    const modeEl = document.getElementById("wave-mode")
+    if (!viewport || !canvas) return
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+
+    const vp = viewport
+    const cx = ctx
+
+    let animFrame = 0
+    let time = 0
+    let waveIdx = 0
+    let lastSwitch = 0
+    const SWITCH_INTERVAL = 5000
+
+    function resize() {
+      const dpr = window.devicePixelRatio || 1
+      const rect = vp.getBoundingClientRect()
+      canvas.width = rect.width * dpr
+      canvas.height = rect.height * dpr
+      cx.scale(dpr, dpr)
+    }
+
+    function draw() {
+      const w = vp.clientWidth
+      const h = vp.clientHeight
+      const now = performance.now()
+
+      if (now - lastSwitch > SWITCH_INTERVAL) {
+        waveIdx = (waveIdx + 1) % WAVEFORMS.length
+        lastSwitch = now
+        if (modeEl) modeEl.textContent = WAVEFORMS[waveIdx].name
+      }
+
+      const wave = WAVEFORMS[waveIdx]
+
+      cx.clearRect(0, 0, w, h)
+
+      for (let i = 0; i < 3; i++) {
+        const amp = 20 - i * 5
+        const freq = 0.02 + i * 0.008
+        const speed = 0.03 + i * 0.01
+        const yOffset = (i - 1) * 8
+
+        cx.beginPath()
+        cx.strokeStyle = wave.colors[i] || wave.colors[0]
+        cx.lineWidth = 1.5
+        cx.globalAlpha = 0.7 - i * 0.15
+
+        for (let x = 0; x <= w; x += 2) {
+          const val = wave.fn(x * freq, time * speed, amp)
+          const y = h / 2 + yOffset + val
+
+          if (x === 0) cx.moveTo(x, y)
+          else cx.lineTo(x, y)
+        }
+
+        cx.stroke()
+      }
+
+      cx.globalAlpha = 1
+      time++
+      animFrame = requestAnimationFrame(draw)
+    }
+
+    resize()
+    window.addEventListener("resize", resize)
+
+    lastSwitch = performance.now()
+    cancelAnimationFrame(animFrame)
+    animFrame = requestAnimationFrame(draw)
+
+    document.addEventListener("astro:page-load", () => {
+      resize()
+      cancelAnimationFrame(animFrame)
+      animFrame = requestAnimationFrame(draw)
+    })
+  }
+
+  document.addEventListener("astro:page-load", initWave)
+  document.addEventListener("astro:after-swap", initWave)
+  initWave()
+</script>
