@@ -1,8 +1,6 @@
 # vanam-erudite
 
-A personal portfolio and blog built with [Astro](https://astro.build/), forked from [astro-erudite](https://github.com/jktrn/astro-erudite) by [enscribe](https://enscribe.dev).
-
----
+A personal portfolio and blog built with [Astro](https://astro.build/), based on the [astro-erudite](https://github.com/jktrn/astro-erudite) theme.
 
 ## Quick Start
 
