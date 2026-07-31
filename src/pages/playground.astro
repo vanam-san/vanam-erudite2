@@ -7,17 +7,16 @@ import BouncingSquare from "@/components/bento/BouncingSquare.astro"
 import CRTClock from "@/components/bento/CRTClock.astro"
 import MatrixRain from "@/components/bento/MatrixRain.astro"
 import Starfield from "@/components/bento/Starfield.astro"
+import WaveInterference from "@/components/bento/WaveInterference.astro"
 ---
 
 <Layout>
-  <MetaPage slot="head" title="Playground" />
+  <MetaPage slot="head" title="Experimental Bento Cards" />
   <ScrollToTop floating />
 
   <div class="page-header">
-    <h1 class="page-title">Playground</h1>
-    <p class="page-subtitle">
-      Live currency rates, flight tracking, and a few animated widgets
-    </p>
+    <h1 class="page-title">Experimental Bento Cards</h1>
+    <p class="page-subtitle">Live data feeds and generative visuals</p>
   </div>
 
   <div class="bento-grid bento-grid-playground">
@@ -26,6 +25,7 @@ import Starfield from "@/components/bento/Starfield.astro"
     <MatrixRain />
     <BouncingSquare />
     <CurrencyTracker />
+    <WaveInterference />
   </div>
 </Layout>
 
