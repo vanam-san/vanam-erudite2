@@ -24,6 +24,7 @@ export const NAVIGATION = [
   { href: "/blog", label: "Blog" },
   { href: "/gallery", label: "Gallery" },
   { href: "/projects", label: "Projects" },
+  { href: "/playground", label: "Playground" },
 ]
 
 export const SOCIALS: { href: string; label: string; icon: SvgComponent }[] = [

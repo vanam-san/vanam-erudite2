@@ -170,7 +170,8 @@ const section = NAVIGATION.find(
       &[aria-current="page"] {
         color: var(--secondary);
         border-inline-start-color: var(--secondary);
-        text-shadow: 0 0 12px color-mix(in oklab, var(--secondary) 25%, transparent);
+        text-shadow: 0 0 12px
+          color-mix(in oklab, var(--secondary) 25%, transparent);
       }
     }
 
@@ -261,7 +262,8 @@ const section = NAVIGATION.find(
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     padding: var(--space-xs);
-    box-shadow: 0 4px 16px color-mix(in oklab, var(--foreground) 8%, transparent);
+    box-shadow: 0 4px 16px
+      color-mix(in oklab, var(--foreground) 8%, transparent);
     z-index: 100;
 
     &.open {

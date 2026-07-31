@@ -1,0 +1,236 @@
+---
+import BentoCard from "@/components/BentoCard.astro"
+---
+
+<BentoCard span={2} class="bento-stars">
+  <div class="bento-label">Starfield</div>
+  <div class="stars-content">
+    <div class="stars-screen">
+      <canvas id="stars-canvas"></canvas>
+    </div>
+    <div class="stars-footer">
+      <span class="stars-meta" id="stars-meta">WARP DRIVE READY</span>
+      <span class="stars-cursor"></span>
+    </div>
+  </div>
+</BentoCard>
+
+<style>
+  .bento-stars {
+    gap: var(--space-xs);
+  }
+
+  .stars-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    flex: 1;
+  }
+
+  .stars-screen {
+    flex: 1;
+    min-height: 170px;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    background: color-mix(in oklab, var(--muted) 30%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    background-image: radial-gradient(
+      ellipse at 50% 50%,
+      color-mix(in oklab, var(--cyan-7) 8%, transparent),
+      transparent 70%
+    );
+  }
+
+  .stars-screen canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .stars-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-xs);
+  }
+
+  .stars-meta {
+    font-size: var(--step--2);
+    font-family: var(--font-mono);
+    letter-spacing: 0.06em;
+    color: var(--muted-foreground);
+  }
+
+  .stars-cursor {
+    display: inline-block;
+    width: 0.5em;
+    height: 1em;
+    background: var(--primary);
+    animation: stars-blink 1s steps(1) infinite;
+    box-shadow: var(--glow-subtle);
+  }
+
+  @keyframes stars-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
+
+<script>
+  interface Star {
+    x: number
+    y: number
+    z: number
+    pz: number
+  }
+
+  function initStars() {
+    const canvasEl = document.getElementById(
+      "stars-canvas",
+    ) as HTMLCanvasElement | null
+    const metaEl = document.getElementById("stars-meta")
+
+    if (!canvasEl) return
+    const canvas = canvasEl
+
+    const ctx = canvas.getContext("2d")
+    if (!ctx) return
+    const paint = ctx
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+
+    let stars: Star[] = []
+    let rafId = 0
+    const STAR_COUNT = 220
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      canvas.width = Math.max(1, Math.floor(w * dpr))
+      canvas.height = Math.max(1, Math.floor(h * dpr))
+      paint.setTransform(dpr, 0, 0, dpr, 0, 0)
+      paint.fillStyle = "transparent"
+      paint.clearRect(0, 0, w, h)
+      stars = Array.from({ length: STAR_COUNT }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        z: Math.random() * w,
+        pz: 0,
+      }))
+    }
+
+    const messages = [
+      "WARP DRIVE READY",
+      "ENGAGE...",
+      "LUDICROUS SPEED",
+      "TO INFINITY",
+      "SPACE, THE FINAL FRONTIER",
+      "PUNCH IT, CHEWIE",
+      "DANGER ZONE",
+      "WARP 9, MISTER SULU",
+    ]
+    let msgIdx = 0
+
+    function draw() {
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      if (w === 0 || h === 0) {
+        rafId = requestAnimationFrame(draw)
+        return
+      }
+
+      paint.fillStyle = "rgba(0, 0, 0, 0.28)"
+      paint.fillRect(0, 0, w, h)
+
+      const cx = w / 2
+      const cy = h / 2
+
+      for (const star of stars) {
+        star.z -= 3
+
+        if (star.z <= 0) {
+          star.z = w
+          star.x = Math.random() * w
+          star.y = Math.random() * h
+          star.pz = star.z
+        }
+
+        const sx = ((star.x - cx) * (w / 2)) / star.z + cx
+        const sy = ((star.y - cy) * (h / 2)) / star.z + cy
+
+        const px = star.pz > 0 ? ((star.x - cx) * (w / 2)) / star.pz + cx : sx
+        const py = star.pz > 0 ? ((star.y - cy) * (h / 2)) / star.pz + cy : sy
+
+        const speed = Math.min(2.5, (w / star.z) * 0.08)
+        const alpha = Math.min(1, (w / star.z) * 0.05)
+
+        paint.strokeStyle = `rgba(90, 212, 238, ${alpha})`
+        paint.shadowColor = "rgba(90, 212, 238, 0.9)"
+        paint.shadowBlur = 6
+        paint.lineWidth = 1
+        paint.beginPath()
+        paint.moveTo(px, py)
+        paint.lineTo(sx, sy)
+        paint.stroke()
+        paint.shadowBlur = 0
+
+        if (star.z < w / 3) {
+          paint.fillStyle = `rgba(224, 248, 255, ${alpha})`
+          paint.beginPath()
+          paint.arc(sx, sy, speed * 0.5, 0, Math.PI * 2)
+          paint.fill()
+        }
+
+        star.pz = star.z
+      }
+
+      rafId = requestAnimationFrame(draw)
+    }
+
+    function start() {
+      cancelAnimationFrame(rafId)
+      resize()
+      if (reduced) return
+      rafId = requestAnimationFrame(draw)
+    }
+
+    start()
+
+    window.setInterval(() => {
+      if (metaEl) {
+        metaEl.textContent = messages[msgIdx % messages.length]
+        msgIdx++
+      }
+    }, 6000)
+
+    let resizeTimer = 0
+    window.addEventListener("resize", () => {
+      window.clearTimeout(resizeTimer)
+      resizeTimer = window.setTimeout(start, 150)
+    })
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId)
+      } else {
+        start()
+      }
+    })
+  }
+
+  document.addEventListener("astro:page-load", initStars)
+  document.addEventListener("astro:after-swap", initStars)
+  initStars()
+</script>

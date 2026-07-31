@@ -79,7 +79,11 @@ const { name, description, link, tags, startDate } = project.data
 
     &:hover {
       color: var(--primary);
-      text-decoration-color: color-mix(in oklab, var(--primary) 40%, transparent);
+      text-decoration-color: color-mix(
+        in oklab,
+        var(--primary) 40%,
+        transparent
+      );
     }
   }
 
