@@ -152,7 +152,7 @@ a:hover > .bento-link {
     top: var(--space-2xs);
     bottom: var(--space-2xs);
     width: 2px;
-    background: var(--secondary);
+    background: var(--primary);
     border-radius: 1px;
     opacity: 0;
     transform: scaleY(0);
@@ -275,7 +275,7 @@ a:hover > .bento-link {
     top: var(--space-2xs);
     bottom: var(--space-2xs);
     width: 2px;
-    background: var(--secondary);
+    background: var(--primary);
     border-radius: 1px;
     opacity: 0;
     transform: scaleY(0);
