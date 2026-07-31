@@ -184,14 +184,8 @@ import BentoCard from "@/components/BentoCard.astro"
   ]
 
   let prevRates: Record<string, number> = {}
-  let refreshInterval: ReturnType<typeof setInterval> | null = null
 
   function initCurrency() {
-    if (refreshInterval) {
-      clearInterval(refreshInterval)
-      refreshInterval = null
-    }
-
     const gridEl = document.getElementById("currency-grid")
     const updatedEl = document.getElementById("currency-updated")
     const refreshBtn = document.getElementById("currency-refresh")
@@ -245,7 +239,7 @@ import BentoCard from "@/components/BentoCard.astro"
     }
 
     fetchRates()
-    refreshInterval = setInterval(fetchRates, 60000)
+    setInterval(fetchRates, 60000)
 
     refreshBtn?.addEventListener("click", () => {
       grid.innerHTML =
