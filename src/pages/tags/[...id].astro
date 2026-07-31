@@ -24,7 +24,8 @@ type Props = {
 }
 
 const { tag, group } = Astro.props
-const totalCount = group.blog.length + group.gallery.length + group.projects.length
+const totalCount =
+  group.blog.length + group.gallery.length + group.projects.length
 ---
 
 <Layout
@@ -41,7 +42,11 @@ const totalCount = group.blog.length + group.gallery.length + group.projects.len
   />
   <div class="page-header animate-in">
     <h1 class="page-title">#{tag}</h1>
-    <p class="page-desc">{totalCount} item{totalCount === 1 ? "" : "s"} across blog, gallery, and projects.</p>
+    <p class="page-desc">
+      {totalCount}
+      item{totalCount === 1 ? "" : "s"}
+      across blog, gallery, and projects.
+    </p>
   </div>
 
   {group.blog.length > 0 && (

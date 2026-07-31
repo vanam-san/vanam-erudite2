@@ -12,7 +12,9 @@ const galleriesByYear = getGalleriesByYear(galleries)
   <MetaPage slot="head" title="Gallery" />
   <div class="page-header animate-in">
     <h1 class="page-title">Gallery</h1>
-    <p class="page-desc">A collection of photography and visual work, organized by year.</p>
+    <p class="page-desc">
+      A collection of photography and visual work, organized by year.
+    </p>
   </div>
   <div class="year-groups">
     {[...galleriesByYear.entries()].map(([year, yearGalleries]) => (

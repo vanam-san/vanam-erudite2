@@ -10,7 +10,9 @@ const tags = await getAllTags()
   <MetaPage slot="head" title="Tags" noindex />
   <div class="page-header animate-in">
     <h1 class="page-title">Tags</h1>
-    <p class="page-desc">Browse all content by tag across blog, gallery, and projects.</p>
+    <p class="page-desc">
+      Browse all content by tag across blog, gallery, and projects.
+    </p>
   </div>
   <ul>
     {[...tags].map(([tag, group], i) => {

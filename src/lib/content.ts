@@ -118,8 +118,10 @@ export async function getAllTags(): Promise<Map<string, TagGroup>> {
 
   return new Map(
     [...tags].sort(([a, groupA], [b, groupB]) => {
-      const countA = groupA.blog.length + groupA.gallery.length + groupA.projects.length
-      const countB = groupB.blog.length + groupB.gallery.length + groupB.projects.length
+      const countA =
+        groupA.blog.length + groupA.gallery.length + groupA.projects.length
+      const countB =
+        groupB.blog.length + groupB.gallery.length + groupB.projects.length
       return countB - countA || a.localeCompare(b)
     }),
   )
@@ -130,7 +132,5 @@ export async function getTags(): Promise<
   Map<string, CollectionEntry<"blog">[]>
 > {
   const allTags = await getAllTags()
-  return new Map(
-    [...allTags].map(([tag, group]) => [tag, group.blog]),
-  )
+  return new Map([...allTags].map(([tag, group]) => [tag, group.blog]))
 }
