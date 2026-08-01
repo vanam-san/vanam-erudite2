@@ -3,7 +3,13 @@ import BentoCard from "@/components/BentoCard.astro"
 ---
 
 <BentoCard span={2} class="bento-currency">
-  <div class="bento-label">Live Currency Rates</div>
+  <div class="currency-header-bar">
+    <span class="bento-label">Live Currency Rates</span>
+    <div class="currency-status">
+      <span class="currency-status-dot"></span>
+      <span class="currency-countdown" id="currency-countdown">60s</span>
+    </div>
+  </div>
   <div class="currency-content">
     <div class="currency-grid" id="currency-grid">
       <div class="currency-skeleton">
@@ -14,25 +20,10 @@ import BentoCard from "@/components/BentoCard.astro"
       </div>
     </div>
     <div class="currency-footer">
-      <span class="currency-meta" id="currency-updated">Loading...</span>
-      <button
-        class="currency-refresh"
-        id="currency-refresh"
-        aria-label="Refresh"
-      >
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path
-            d="M21 2v6h-6M3 12a9 9 0 0 1 15-6.7L21 8M3 22v-6h6M21 12a9 9 0 0 1-15 6.7L3 16"
-          />
-        </svg>
-      </button>
+      <div class="currency-dates">
+        <span class="currency-meta" id="currency-started">--</span>
+        <span class="currency-meta" id="currency-updated">Loading...</span>
+      </div>
     </div>
   </div>
 </BentoCard>
@@ -40,6 +31,37 @@ import BentoCard from "@/components/BentoCard.astro"
 <style>
   .bento-currency {
     gap: var(--space-xs);
+  }
+
+  .currency-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .currency-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+  }
+
+  .currency-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--secondary);
+    box-shadow: 0 0 6px var(--secondary);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.4;
+    }
   }
 
   .currency-content {
@@ -63,7 +85,7 @@ import BentoCard from "@/components/BentoCard.astro"
   }
 
   .currency-skel-item {
-    height: 3.5rem;
+    height: 4rem;
     background: linear-gradient(
       90deg,
       var(--muted) 25%,
@@ -90,31 +112,59 @@ import BentoCard from "@/components/BentoCard.astro"
     gap: 4px;
     padding: var(--space-xs);
     border-radius: var(--radius-md);
-    background: color-mix(in oklab, var(--muted) 30%, transparent);
-    border: 1px solid color-mix(in oklab, var(--border) 40%, transparent);
+    background: color-mix(in oklab, var(--muted) 25%, transparent);
+    border: 1px solid var(--border);
+  }
+
+  .currency-legend {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--step--3);
+    letter-spacing: 0.05em;
+  }
+
+  .currency-legend-pair {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+  }
+
+  .currency-legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 2px;
+  }
+
+  .currency-legend-dot.up {
+    background: var(--primary);
+  }
+
+  .currency-legend-dot.down {
+    background: var(--red-9);
+  }
+
+  .currency-legend-dot.neutral {
+    background: var(--muted-foreground);
   }
 
   .currency-header {
     display: flex;
     align-items: center;
-    gap: var(--space-3xs);
+    justify-content: space-between;
   }
 
   .currency-flag {
     font-size: var(--step-0);
   }
 
-  .currency-code {
-    font-size: var(--step--2);
-    font-family: var(--font-mono);
-    font-weight: var(--font-weight-medium);
-    color: var(--muted-foreground);
-    text-transform: uppercase;
-  }
-
   .currency-value {
     font-size: var(--step-1);
     font-weight: 700;
+    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
     letter-spacing: var(--tracking-tighter);
   }
@@ -126,7 +176,7 @@ import BentoCard from "@/components/BentoCard.astro"
   }
 
   .currency-change.up {
-    color: var(--green-9);
+    color: var(--primary);
   }
 
   .currency-change.down {
@@ -143,29 +193,22 @@ import BentoCard from "@/components/BentoCard.astro"
     justify-content: space-between;
   }
 
+  .currency-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
   .currency-meta {
     font-size: var(--step--2);
-    color: color-mix(in oklab, var(--muted-foreground) 70%, transparent);
-  }
-
-  .currency-refresh {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-full);
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: var(--muted-foreground);
-    cursor: pointer;
-    transition: all 0.2s ease;
   }
 
-  .currency-refresh:hover {
-    color: var(--primary);
-    border-color: var(--primary);
-    transform: rotate(90deg);
+  .currency-countdown {
+    font-size: var(--step--3);
+    font-family: var(--font-mono);
+    color: var(--muted-foreground);
+    letter-spacing: 0.05em;
   }
 
   @media (width < 40rem) {
@@ -183,71 +226,197 @@ import BentoCard from "@/components/BentoCard.astro"
     { code: "JPY", flag: "\u{1F1EF}\u{1F1F5}", label: "Yen" },
   ]
 
-  let prevRates: Record<string, number> = {}
+  const CURRENCY_CODES = ["EUR", "GBP", "INR", "JPY"]
+  const API_BASE = "https://api.frankfurter.dev/v2"
+  const REFRESH_INTERVAL = 60
+  let countdown = REFRESH_INTERVAL
+  let countdownInterval: ReturnType<typeof setInterval> | null = null
+
+  function formatDate(d: Date): string {
+    return d.toISOString().split("T")[0]
+  }
+
+  function renderGrid(
+    grid: HTMLElement,
+    updated: HTMLElement,
+    started: HTMLElement,
+    history: Record<string, number[]>,
+    startDate: string,
+  ) {
+    grid.innerHTML = CURRENCIES.map((cur) => {
+      const data = history[cur.code] || []
+      const rate = data[data.length - 1]
+      if (!rate) return ""
+
+      let trend: "up" | "down" | "neutral" = "neutral"
+      if (data.length >= 2) {
+        const first = data[0]
+        const last = data[data.length - 1]
+        if (last > first) trend = "up"
+        else if (last < first) trend = "down"
+      }
+
+      // Percentage change = ((current - initial) / initial) * 100
+      // Shows the relative change from the first data point to the latest
+      const change =
+        data.length >= 2
+          ? (((data[data.length - 1] - data[0]) / data[0]) * 100).toFixed(2)
+          : "0.00"
+      const changeSign = Number(change) > 0 ? "+" : ""
+
+      return `<div class="currency-item">
+  <div class="currency-legend">
+    <span class="currency-legend-pair">
+      <span class="currency-legend-dot ${trend}"></span>
+      USD/${cur.code}
+    </span>
+    <span class="currency-change ${trend}">${changeSign}${change}%</span>
+  </div>
+  <div class="currency-header">
+    <span class="currency-flag">${cur.flag}</span>
+    <span class="currency-value">${rate.toFixed(2)}</span>
+  </div>
+</div>`
+    })
+      .filter(Boolean)
+      .join("")
+
+    started.textContent = `From: ${new Date(startDate + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}`
+    updated.textContent = `Updated: ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`
+  }
+
+  async function fetchWeekHistory(): Promise<{
+    history: Record<string, number[]>
+    startDate: string
+  }> {
+    const end = new Date()
+    const start = new Date()
+    start.setDate(end.getDate() - 6)
+
+    const quotes = CURRENCY_CODES.join(",")
+    const url = `${API_BASE}/rates?base=USD&from=${formatDate(start)}&to=${formatDate(end)}&quotes=${quotes}`
+
+    const res = await fetch(url)
+    const rows: Array<{ date: string; quote: string; rate: number }> =
+      await res.json()
+
+    const history: Record<string, number[]> = {}
+    CURRENCY_CODES.forEach((code) => {
+      history[code] = []
+    })
+
+    const byDate: Record<string, Record<string, number>> = {}
+    for (const row of rows) {
+      if (!byDate[row.date]) byDate[row.date] = {}
+      byDate[row.date][row.quote] = row.rate
+    }
+
+    const dates = Object.keys(byDate).sort()
+    for (const date of dates) {
+      for (const code of CURRENCY_CODES) {
+        if (byDate[date][code] != null) {
+          history[code].push(byDate[date][code])
+        }
+      }
+    }
+
+    return {
+      history,
+      startDate: dates[0] || formatDate(start),
+    }
+  }
+
+  async function fetchLatest(): Promise<Record<string, number> | null> {
+    try {
+      const quotes = CURRENCY_CODES.join(",")
+      const res = await fetch(`${API_BASE}/rates?base=USD&quotes=${quotes}`)
+      const rows: Array<{ quote: string; rate: number }> = await res.json()
+      const rates: Record<string, number> = {}
+      for (const row of rows) {
+        rates[row.quote] = row.rate
+      }
+      return rates
+    } catch {
+      return null
+    }
+  }
 
   function initCurrency() {
     const gridEl = document.getElementById("currency-grid")
     const updatedEl = document.getElementById("currency-updated")
-    const refreshBtn = document.getElementById("currency-refresh")
+    const startedEl = document.getElementById("currency-started")
+    const countdownEl = document.getElementById("currency-countdown")
 
     if (!gridEl || !updatedEl) return
     const grid = gridEl
     const updated = updatedEl
+    const started = startedEl || updatedEl
+    const countdownDisplay = countdownEl
 
-    async function fetchRates() {
-      try {
-        const res = await fetch("https://open.er-api.com/v6/latest/USD")
-        const data = await res.json()
+    const history: Record<string, number[]> = {}
+    CURRENCY_CODES.forEach((code) => {
+      history[code] = []
+    })
 
-        if (data.rates) {
-          grid.innerHTML = CURRENCIES.map((cur) => {
-            const rate = data.rates[cur.code]
-            if (!rate) return ""
+    let currentStartDate = "--"
 
-            const prev = prevRates[cur.code]
-            let changeClass = "neutral"
-            let arrow = ""
-            if (prev) {
-              if (rate > prev) {
-                changeClass = "up"
-                arrow = "\u25B2"
-              } else if (rate < prev) {
-                changeClass = "down"
-                arrow = "\u25BC"
-              }
-            }
-            prevRates[cur.code] = rate
-
-            return `<div class="currency-item">
-  <div class="currency-header">
-    <span class="currency-flag">${cur.flag}</span>
-    <span class="currency-code">${cur.code}</span>
-  </div>
-  <div class="currency-value">${rate.toFixed(2)}</div>
-  <div class="currency-change ${changeClass}">${arrow} 1 USD = ${rate.toFixed(2)} ${cur.code}</div>
-</div>`
-          })
-            .filter(Boolean)
-            .join("")
-
-          updated.textContent = `Updated ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`
-        }
-      } catch {
-        grid.innerHTML =
-          '<div class="currency-skeleton"><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div></div>'
+    function resetCountdown() {
+      countdown = REFRESH_INTERVAL
+      if (countdownDisplay) {
+        countdownDisplay.textContent = `${countdown}s`
       }
     }
 
-    fetchRates()
-    setInterval(fetchRates, 60000)
+    function updateCountdown() {
+      countdown--
+      if (countdownDisplay) {
+        countdownDisplay.textContent = `${countdown}s`
+      }
+      if (countdown <= 0) {
+        pollLatest()
+        resetCountdown()
+      }
+    }
 
-    refreshBtn?.addEventListener("click", () => {
-      grid.innerHTML =
-        '<div class="currency-skeleton"><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div><div class="currency-skel-item"></div></div>'
-      updated.textContent = "Loading..."
-      prevRates = {}
-      fetchRates()
-    })
+    if (countdownInterval) clearInterval(countdownInterval)
+    resetCountdown()
+    countdownInterval = setInterval(updateCountdown, 1000)
+
+    async function pollLatest() {
+      const rates = await fetchLatest()
+      if (!rates) return
+      for (const code of CURRENCY_CODES) {
+        if (rates[code] != null) {
+          history[code].push(rates[code])
+          if (history[code].length > 30) {
+            history[code] = history[code].slice(-30)
+          }
+        }
+      }
+      renderGrid(grid, updated, started, history, currentStartDate)
+    }
+
+    async function init() {
+      try {
+        const result = await fetchWeekHistory()
+        for (const code of CURRENCY_CODES) {
+          history[code] = result.history[code] || []
+        }
+        currentStartDate = result.startDate
+        renderGrid(grid, updated, started, history, currentStartDate)
+      } catch {
+        const rates = await fetchLatest()
+        if (rates) {
+          for (const code of CURRENCY_CODES) {
+            if (rates[code] != null) history[code].push(rates[code])
+          }
+          currentStartDate = formatDate(new Date())
+          renderGrid(grid, updated, started, history, currentStartDate)
+        }
+      }
+    }
+
+    init()
   }
 
   document.addEventListener("astro:page-load", initCurrency)
