@@ -1,6 +1,6 @@
 ---
 title: "Customizing astro-erudite: What I Added to the Base Template"
-description: "A walkthrough of every feature added on top of the stock astro-erudite v2 template, from the bento homepage to Giscus comments."
+description: "A walkthrough of every feature added to astro-erudite v2, from the bento homepage to Giscus comments."
 date: 2026-07-30
 authors:
   - vanam
@@ -13,7 +13,7 @@ astro-erudite v2 is a minimal, opinionated blogging template. Out of the box it 
 
 ## Bento grid homepage
 
-The stock v2 homepage is a dictionary-style entry with a title, pronunciation, and a short description. I replaced it with a bento grid layout — a two-column card-based interface that surfaces content at a glance.
+A bento grid layout — a two-column card-based interface that surfaces content at a glance.
 
 The grid is built with `BentoCard.astro`, a generic card wrapper that supports column and row spanning:
 
@@ -41,7 +41,7 @@ The entire grid collapses to a single column on viewports narrower than 40rem.
 
 ## Umami analytics
 
-v2 ships with no analytics. I added [Umami](https://umami.is/), a privacy-focused, cookieless analytics tool.
+[Umami](https://umami.is/) — a privacy-focused, cookieless analytics tool.
 
 Configuration lives in `consts.ts`:
 
@@ -69,7 +69,7 @@ This means the template works identically without analytics configured. No cooki
 
 ## Giscus comments
 
-v2 has no comment system. I integrated [Giscus](https://giscus.app/), which uses GitHub Discussions as a backend.
+[Giscus](https://giscus.app/) — uses GitHub Discussions as a backend.
 
 The `Giscus.astro` component handles three things:
 
@@ -87,7 +87,7 @@ Like Umami, it requires no configuration to function — just set three environm
 
 ## Gallery system
 
-v2 has no gallery or photo collection. I added a complete gallery feature with:
+A complete gallery feature with:
 
 - **Content collection** — `gallery` entries with a title, description, date, cover image, and an array of photos
 - **Listing page** — a responsive grid of `GalleryCard` components at `/gallery`
@@ -99,11 +99,11 @@ The gallery card styling mirrors the blog and project cards: border, background,
 
 ## Setup as a blog post
 
-The original v2 template had no setup or "uses" page. I added a dedicated setup blog post at `/blog/my-setup` showcasing hardware and software tools, instead of a standalone `/setup` page. This keeps all content in the blog collection and makes it easier to maintain alongside other posts.
+A dedicated setup blog post at `/blog/my-setup` showcasing hardware and software tools, instead of a standalone `/setup` page. This keeps all content in the blog collection and makes it easier to maintain alongside other posts.
 
 ## Scroll-to-top button
 
-v2's `ScrollToTop.astro` component is used only inside the sidebar on desktop. I added a `floating` variant that renders as a fixed-position button in the bottom-right corner on mobile. It appears after scrolling past 50% of the viewport height and uses `backdrop-filter: blur()` for a translucent background.
+A `floating` variant of `ScrollToTop.astro` that renders as a fixed-position button in the bottom-right corner on mobile. It appears after scrolling past 50% of the viewport height and uses `backdrop-filter: blur()` for a translucent background.
 
 ```astro
 <ScrollToTop floating />
@@ -113,7 +113,7 @@ This component is used on the homepage, blog posts, and gallery detail pages.
 
 ## Blog and project card hover effects
 
-The stock v2 blog and project cards are flat list items with no visual containment. I added card-like styling to match the gallery cards:
+Blog and project cards were flat list items with no visual containment. I added card-like styling to match the gallery cards:
 
 - `border: 1.5px solid var(--border)` with `border-radius: var(--radius-2xl)`
 - `background-color: color-mix(in oklab, var(--muted) 20%, transparent)`
@@ -274,22 +274,22 @@ Blog cards show `words · min read`, gallery cards show `N photos`, and project 
 
 ## Summary
 
-| Feature | Base v2 | Added |
-| - | - | - |
-| Homepage | Dictionary entry | Bento grid with 5 card types |
-| Analytics | None | Umami (cookieless) |
-| Comments | None | Giscus (GitHub Discussions) |
-| Galleries | None | Full gallery with lightbox |
-| Setup | None | Blog post with hardware/software showcase |
-| Scroll to top | Sidebar only | Floating mobile button |
-| Card hover effects | Gallery only | Blog, projects, vertical bar accent |
-| Reading time + word count | Post page only | Blog listing cards too |
-| Text reveal animation | None | Hero card bio |
-| Gallery slideshow | None | Auto-cycling bento card |
-| Weather widget | None | Live wttr.in data |
-| Color theme | Default gray | Midnight Galaxy purple palette |
-| Typography | Single sans stack | Fraunces display + IBM Plex body |
-| Tag system | None | Unified cross-collection tags |
-| Gallery layout | Grid cards | List with year sorting |
+| Feature | Added |
+| - | - |
+| Homepage | Bento grid with 5 card types |
+| Analytics | Umami (cookieless) |
+| Comments | Giscus (GitHub Discussions) |
+| Galleries | Full gallery with lightbox |
+| Setup | Blog post with hardware/software showcase |
+| Scroll to top | Floating mobile button |
+| Card hover effects | Blog, projects, vertical bar accent |
+| Reading time + word count | Blog listing cards too |
+| Text reveal animation | Hero card bio |
+| Gallery slideshow | Auto-cycling bento card |
+| Weather widget | Live wttr.in data |
+| Color theme | Midnight Galaxy purple palette |
+| Typography | Fraunces display + IBM Plex body |
+| Tag system | Unified cross-collection tags |
+| Gallery layout | List with year sorting |
 
 Every addition follows the same principle as the base template: minimal JavaScript, native CSS, and no unnecessary dependencies. The Giscus and Umami integrations are the only external services, and both are optional — the site works fully without them configured.

@@ -14,13 +14,13 @@ This guide walks you through setting up and customizing this Astro theme for you
 ```bash
 git clone https://github.com/vanam-san/vanam-erudite2.git
 cd vanam-erudite
-npm install
+bun install
 ```
 
 Start the dev server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 ## Configuration
@@ -135,7 +135,7 @@ Copy `.env.example` to `.env` and fill in:
 Build and deploy to your preferred platform:
 
 ```bash
-npm run build
+bun run build
 ```
 
 The output is in `dist/`. Deploy to Vercel, Netlify, Cloudflare Pages, or any static host.
