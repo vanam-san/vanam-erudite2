@@ -1,0 +1,108 @@
+name: Auto Tag & Release (from package.json)
+
+on:
+  push:
+    branches:
+      - master
+      - ci/auto-release-test
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  tag-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history, tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Read package.json version
+        id: read_version
+        run: |
+          if [ ! -f package.json ]; then
+            echo "no_package=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          # Build a short tag by stripping the patch segment. e.g., 1.1.0 -> 1.1
+          SHORT_TAG=$(echo "$VERSION" | sed 's/\.[0-9]*$//')
+          TAG="v${SHORT_TAG}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Skip if no package.json
+        if: steps.read_version.outputs.no_package == 'true'
+        run: |
+          echo "package.json not found; skipping release job"
+      
+      - name: Check if tag already exists on origin
+        id: tag_exists
+        if: steps.read_version.outputs.tag != ''
+        run: |
+          TAG=${{ steps.read_version.outputs.tag }}
+          echo "Checking for tag $TAG on origin..."
+          if git ls-remote --tags origin refs/tags/${TAG} | grep -q ${TAG}; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create annotated tag and push (if missing)
+        if: steps.tag_exists.outputs.exists == 'false' && steps.read_version.outputs.tag != ''
+        env:
+          TAG: ${{ steps.read_version.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${TAG}" -m "Release ${TAG}"
+          git push origin "${TAG}"
+
+      - name: Create or update GitHub Release (generate release notes)
+        if: steps.read_version.outputs.tag != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const tag = '${{ steps.read_version.outputs.tag }}';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            try {
+              const res = await github.rest.repos.createRelease({
+                owner,
+                repo,
+                tag_name: tag,
+                name: tag,
+                body: `Auto-release for ${tag}`,
+                draft: false,
+                prerelease: false,
+                generate_release_notes: true
+              });
+              console.log(`Created release for ${tag}: ${res.data.html_url}`);
+            } catch (err) {
+              if (err.status === 422 || (err.message && err.message.includes('already exists'))) {
+                console.log(`Release for ${tag} already exists; attempting update.`);
+                try {
+                  const { data: releases } = await github.rest.repos.listReleases({ owner, repo });
+                  const rel = releases.find(r => r.tag_name === tag);
+                  if (rel) {
+                    const upd = await github.rest.repos.updateRelease({ owner, repo, release_id: rel.id, body: `Updated auto-release for ${tag}` });
+                    console.log(`Updated release ${upd.data.html_url}`);
+                  } else {
+                    console.log('Release exists but could not be found via listReleases.');
+                  }
+                } catch (updErr) {
+                  core && core.warning && core.warning(`Failed to update release: ${updErr.message}`);
+                }
+              } else {
+                core && core.setFailed && core.setFailed(`Failed to create release for ${tag}: ${err.message}`);
+              }
+            }
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
